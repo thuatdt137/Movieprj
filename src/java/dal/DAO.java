@@ -1,6 +1,8 @@
 package dal;
 
 import java.sql.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -322,6 +324,63 @@ public class DAO {
         return movie;
     }
 
+    public ArrayList<Movie> pagingMovies(int index, int numPerPage) {
+        ArrayList<Movie> movies = new ArrayList<>();
+        try {
+            System.out.println("Loading data...");
+            String sql = """
+                         SELECT
+                                 M.MovieID,
+                                 M.Title AS MovieTitle,
+                                 M.ReleaseDate,
+                                 M.Description,
+                                 M.ThumbSource,
+                                 M.SourceLink,
+                                 M.TrailerLink,
+                                 M.Status AS MovieStatus,
+                                 M.StatusRelease,
+                                 (SELECT COUNT(1) FROM UserFavoriteMovies WHERE MovieID = M.MovieID AND isLove = 1) AS NumberOfLikes
+                             FROM
+                                 Movie AS M
+                             JOIN
+                                 MovieGenre AS MG ON M.MovieID = MG.MovieID
+                             JOIN
+                                 Genre AS G ON MG.GenreID = G.GenreID
+                             GROUP BY
+                                 M.MovieID, M.Title, M.ReleaseDate, M.Description, M.ThumbSource, M.SourceLink, M.TrailerLink, M.Status, M.StatusRelease
+                             HAVING
+                                 COUNT(M.MovieID) > 1
+                             ORDER BY
+                                 M.MovieID
+                             OFFSET ? ROWS
+                             FETCH NEXT ? ROWS ONLY;""";
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setInt(1, (index - 1) * numPerPage);
+            ps.setInt(2, numPerPage);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Movie h = new Movie();
+                h.setId(rs.getInt("MovieID"));
+                h.setTitle(rs.getString("MovieTitle"));
+                h.setDate(rs.getDate("ReleaseDate"));
+                h.setDescript(rs.getString("Description"));
+                h.setImg(rs.getString("ThumbSource"));
+                h.setSrc(rs.getString("SourceLink"));
+                h.setTrail(rs.getString("TrailerLink"));
+                h.setStatus(rs.getInt("MovieStatus"));
+                h.setStatusrelease(rs.getInt("StatusRelease"));
+                h.setLikecount(rs.getInt("NumberOfLikes"));
+                movies.add(h);
+            }
+
+        } catch (SQLException e) {
+            status = "Error at read Users " + e.getMessage();
+        }
+        setRating(movies);
+        setGenre(movies);
+        return movies;
+    }
+
     public ArrayList<Movie> getMovies() {
         ArrayList<Movie> movies = new ArrayList<>();
         try {
@@ -428,20 +487,59 @@ public class DAO {
         }
     }
 
-    public void deleteFromDB(int userid) throws SQLException {
+    public void deleteFromDB(int userid) {
         String deleteFavoriteMoviesQuery = "DELETE FROM UserFavoriteMovies WHERE UserID = ?";
-        try (PreparedStatement statement = con.prepareStatement(deleteFavoriteMoviesQuery)) {
+        try {
+            PreparedStatement statement = con.prepareStatement(deleteFavoriteMoviesQuery);
             statement.setInt(1, userid);
             statement.executeUpdate();
+        } catch (SQLException e) {
         }
-
 
         // Xóa người dùng từ bảng Userdb
         String deleteUserQuery = "DELETE FROM Userdb WHERE UserID = ?";
-        try (PreparedStatement statement = con.prepareStatement(deleteUserQuery)) {
+
+        try {
+            PreparedStatement statement = con.prepareStatement(deleteUserQuery);
             statement.setInt(1, userid);
             statement.executeUpdate();
+        } catch (SQLException e) {
         }
+    }
+
+    public boolean insertMovie(String title, String dateRelease, String descript, String img, String source, String trailer, int Status, int statusrelease) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        java.util.Date date = null;
+        boolean check = false;
+
+        System.out.println("Saving data...");
+        String sql = """
+                     INSERT INTO Movie (Title, ReleaseDate, Description, ThumbSource, SourceLink, TrailerLink, Status, StatusRelease)
+                     VALUES
+                          (?, ?, ?, ?, ?, ?, ?, ?)""";
+        try {
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            date = formatter.parse(dateRelease);
+
+            ps.setString(1, title);
+            ps.setDate(2, new java.sql.Date(date.getTime()));
+            ps.setString(3, descript);
+            ps.setString(4, img);
+            ps.setString(5, source);
+            ps.setString(6, trailer);
+            ps.setInt(7, Status);
+            ps.setInt(8, statusrelease);
+
+            int rs = ps.executeUpdate();
+            if (rs != 0) {
+                System.out.println("add success");
+                check = true;
+            }
+        } catch (SQLException | ParseException e) {
+            status = "Error at save Users " + e.getMessage();
+        }
+        return check;
     }
 
     public boolean insert(String Name, String Username, String Password, String Email, int Role, int Status) {
@@ -467,6 +565,21 @@ public class DAO {
             status = "Error at save Users " + e.getMessage();
         }
         return check;
+    }
+
+    public int getTotalMovie() {
+        String sql = "select count(*) from Movie";
+        try {
+            PreparedStatement ps = con.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                return rs.getInt(1);
+            }
+
+        } catch (SQLException e) {
+            status = "Error at save Users " + e.getMessage();
+        }
+        return 0;
     }
 
     public int getTotalUser() {
@@ -509,7 +622,7 @@ public class DAO {
         return list;
     }
 
-    public void deleteListUser(String list_string) throws SQLException {
+    public void deleteListUser(String list_string) {
         list_string = list_string.trim();
         String[] list = list_string.split(",");
         for (String string : list) {
@@ -521,7 +634,7 @@ public class DAO {
         }
     }
 
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) {
         INSTANCE.deleteFromDB(5);
 
     }

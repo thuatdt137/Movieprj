@@ -11,7 +11,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
-import models.User;
+import models.*;
 
 /**
  *
@@ -40,15 +40,16 @@ public class ManageUserServlet extends HttpServlet {
             index = Integer.parseInt(indexPage);
         }
 
-        
         int count = dao.getTotalUser();
         int endPage = count / numPerPage;
         if (count % numPerPage != 0) {
             endPage++;
         }
 
-        ArrayList<User> list = dao.pagingAccount(index, numPerPage);
-        request.setAttribute("listA", list);
+        ArrayList<User> list_user = dao.pagingAccount(index, numPerPage);
+        ArrayList<Movie> list_movie = dao.pagingMovies(index, numPerPage);
+        request.setAttribute("listA", list_user);
+        request.setAttribute("listB", list_movie);
         request.setAttribute("numUser", count);
         request.setAttribute("currPage", index);
         request.setAttribute("endPage", endPage);
@@ -66,8 +67,29 @@ public class ManageUserServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
-        request.getRequestDispatcher("views/manager.jsp").forward(request, response);
+        response.setContentType("text/html;charset=UTF-8");
+        String indexPage = request.getParameter("index");
+        
+        int index = 1;
+        if (indexPage != null) {
+            index = Integer.parseInt(indexPage);
+        }
+
+        int count1 = dao.getTotalUser();
+        int endPage1 = count1 / numPerPage;
+        if (count1 % numPerPage != 0) {
+            endPage1++;
+        }
+
+        ArrayList<User> list_user = dao.pagingAccount(index, numPerPage);
+
+        request.setAttribute("listA", list_user);
+
+        request.setAttribute("num1", count1);
+        request.setAttribute("currPage", index);
+        request.setAttribute("endPage1", endPage1);
+
+        request.getRequestDispatcher("views/managerUser.jsp").forward(request, response);
 
     }
 

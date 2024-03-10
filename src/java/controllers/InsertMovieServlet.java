@@ -6,22 +6,24 @@ package controllers;
 
 import dal.DAO;
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import models.User;
+import jakarta.servlet.http.Part;
+import java.io.File;
 
+@MultipartConfig(fileSizeThreshold = 1024 * 1024 * 2, // 2MB
+        maxFileSize = 1024 * 1024 * 10, // 10MB
+        maxRequestSize = 1024 * 1024 * 50)   // 50MB
 /**
  *
  * @author thuat
  */
-public class UpdateUserServlet extends HttpServlet {
+public class InsertMovieServlet extends HttpServlet {
 
     DAO dao = DAO.getINSTANCE();
-
-
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
@@ -35,15 +37,6 @@ public class UpdateUserServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String id_string = request.getParameter("uid");
-        int id;
-        try {
-            id = Integer.parseInt(id_string);
-            User user = dao.getUserbyId(id);
-            request.setAttribute("userSelected", user);
-            request.getRequestDispatcher("views/updateuser.jsp").forward(request, response);
-        } catch (ServletException | IOException | NumberFormatException e) {
-        }
 
     }
 
@@ -58,24 +51,39 @@ public class UpdateUserServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        int id, role, status;
+        int status;
 
-        String id_string = request.getParameter("id");
-        String name = request.getParameter("name");
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
-        String email = request.getParameter("email");
-        String role_string = request.getParameter("role");
-        String status_string = request.getParameter("status");
+        String name = request.getParameter("nameinsert");
+        String date = request.getParameter("dateinsert");
+        String description = request.getParameter("descriptioninsert");
+        Part filePart = request.getPart("imginsert");
+        String source = request.getParameter("sourceinsert");
+        String trailer = request.getParameter("trailerinsert");
+        String status_string = request.getParameter("statusinsert");
+
+        String fileName = filePart.getSubmittedFileName();
+        isDirExist("/images/uploads/movies/");
+        String filePath = "/images/uploads/movies/" + fileName;
         try {
-            id = Integer.parseInt(id_string);
-            role = Integer.parseInt(role_string);
             status = Integer.parseInt(status_string);
 
-            dao.updateDB(name, username, password, email, role, status, id);
-            response.sendRedirect("manageuser");
+            dao.insertMovie(name, date, description, filePath, source, trailer, status, 1);
+            response.sendRedirect("managemovie");
         } catch (NumberFormatException e) {
         }
+    }
+
+    public static boolean isDirExist(String directoryPath) {
+        File directory = new File(directoryPath);
+
+        // Kiểm tra xem thư mục đã tồn tại chưa
+        if (!directory.exists()) {
+            // Nếu không tồn tại, thì tạo mới
+            return directory.mkdirs();
+        }
+
+        // Nếu thư mục đã tồn tại, không cần tạo mới
+        return true;
     }
 
     /**

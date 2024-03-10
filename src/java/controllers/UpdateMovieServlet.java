@@ -6,22 +6,19 @@ package controllers;
 
 import dal.DAO;
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import models.User;
+import models.*;
 
 /**
  *
  * @author thuat
  */
-public class UpdateUserServlet extends HttpServlet {
+public class UpdateMovieServlet extends HttpServlet {
 
     DAO dao = DAO.getINSTANCE();
-
-
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
@@ -39,12 +36,11 @@ public class UpdateUserServlet extends HttpServlet {
         int id;
         try {
             id = Integer.parseInt(id_string);
-            User user = dao.getUserbyId(id);
-            request.setAttribute("userSelected", user);
-            request.getRequestDispatcher("views/updateuser.jsp").forward(request, response);
+            Movie movie = dao.getMovieByID(id);
+            request.setAttribute("movieSelected", movie);
+            request.getRequestDispatcher("views/updatemovie.jsp").forward(request, response);
         } catch (ServletException | IOException | NumberFormatException e) {
         }
-
     }
 
     /**

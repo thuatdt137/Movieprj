@@ -6,21 +6,20 @@ package controllers;
 
 import dal.DAO;
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.ArrayList;
+import models.*;
 
 /**
  *
  * @author thuat
  */
-public class DeleteUserServlet extends HttpServlet {
+public class ManagerMovieServlet extends HttpServlet {
 
+    int numPerPage = 5;
     DAO dao = DAO.getINSTANCE();
 
     /**
@@ -35,18 +34,25 @@ public class DeleteUserServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet DeleteServlet</title>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet DeleteServlet at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+        String indexPage = request.getParameter("index");
+        int index = 1;
+        if (indexPage != null) {
+            index = Integer.parseInt(indexPage);
         }
+
+        int count = dao.getTotalUser();
+        int endPage = count / numPerPage;
+        if (count % numPerPage != 0) {
+            endPage++;
+        }
+
+        ArrayList<User> list_user = dao.pagingAccount(index, numPerPage);
+        ArrayList<Movie> list_movie = dao.pagingMovies(index, numPerPage);
+        request.setAttribute("listA", list_user);
+        request.setAttribute("listB", list_movie);
+        request.setAttribute("numUser", count);
+        request.setAttribute("currPage", index);
+        request.setAttribute("endPage", endPage);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -61,15 +67,30 @@ public class DeleteUserServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String id_string = request.getParameter("uid");
-        int id;
-        try {
-            id = Integer.parseInt(id_string);
-            dao.deleteFromDB(id);
-            response.sendRedirect("manageuser");
-        } catch (NumberFormatException e) {
-            System.out.println(e);
+        response.setContentType("text/html;charset=UTF-8");
+        String indexPage = request.getParameter("index");
+
+        int index = 1;
+        if (indexPage != null) {
+            index = Integer.parseInt(indexPage);
         }
+
+        int count = dao.getTotalMovie();
+        int endPage = count / numPerPage;
+        if (count % numPerPage != 0) {
+            endPage++;
+        }
+
+        ArrayList<Movie> list_movie = dao.pagingMovies(index, numPerPage);
+
+        request.setAttribute("listA", list_movie);
+
+        request.setAttribute("num", count);
+        request.setAttribute("currPage", index);
+        request.setAttribute("endPage", endPage);
+
+        request.getRequestDispatcher("views/managerMovie.jsp").forward(request, response);
+
     }
 
     /**

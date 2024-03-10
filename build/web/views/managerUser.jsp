@@ -21,39 +21,27 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
 
         <script>
-            function Showoptions() {
-                var selectOptions = document.getElementById("select-mange").value;
 
-                // Hide all tables initially
-                var allTables = document.querySelectorAll('.user-table, .movie-table, .genre-table, .actor-table');
-                allTables.forEach(function (table) {
-                    table.style.display = "none";
-                });
+            function pageLink(index) {
+                var inputValue = document.getElementById("select-mange").value; // Lấy giá trị từ phần tử input
 
-                // Show the selected table based on the dropdown value
-                var selectedTable = document.getElementsByClassName(selectOptions);
-                for (var i = 0; i < selectedTable.length; i++) {
-                    selectedTable[i].style.display = "block";
-                }
+                // Tạo URL với tham số index và value
+                var url = "manageuser?page=" + encodeURIComponent(inputValue) + "&index=" + index;
+
+                window.location(url);
+                // Gán URL cho href của liên kết
+                document.getElementById(index).href = url;
             }
         </script>
     </head>
 
     <body>
-        <div class="container-xl">
+        <div class="container-fluid">
             <div class="table-wrapper">
                 <div class="table-title">
                     <div class="row">
                         <div class="col-sm-6">
-                            <h2><b>Manage:</b></h2>
-                            <form>
-                                <select class="custom-select mt-3" id="select-mange" onchange="Showoptions()">
-                                    <option value="user-table">User</option>
-                                    <option value="movie-table">Movie</option>
-                                    <option value="genre-table">Genre</option>
-                                    <option value="actor-table">Actor</option>
-                                </select>
-                            </form>
+                            <h2><b>Manage User</b></h2>
                         </div>
                         <div class="col-sm-6 user-table">
                             <a href="#addUserModall" class="btn btn-success" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Add New User</span></a>
@@ -116,86 +104,10 @@
                     </table>
                     <%-- footer paging --%>
                     <div class="clearfix">
-                        <div class="hint-text">Showing <b>${listA.size()}</b> out of <b>${numUser}</b> entries</div>
+                        <div class="hint-text">Showing <b>${listA.size()}</b> out of <b>${num1}</b> entries</div>
                         <ul class="pagination">
                             <c:set var="c" value="1"></c:set>
-                            <c:forEach begin="1" end="${endPage}" var ="i">
-                                <c:choose>
-                                    <c:when test="${currPage eq i}">
-                                        <li id="${i}" class="page-item page-user active"><a href="manageuser?index=${i}" class="page-link">${i}</a></li>
-                                        </c:when>
-                                        <c:otherwise>
-                                        <li id="${i}" class="page-item page-user"><a href="manageuser?index=${i}" class="page-link">${i}</a></li>
-                                        </c:otherwise>
-                                    </c:choose>
-                                </c:forEach>
-                        </ul>
-                    </div>
-                </div>
-                <div class="movie-table" style="display: none">
-                    <table class="table table-striped table-hover">
-                        <thead>
-                            <tr>
-                                <th>
-                                    <span class="custom-checkbox">
-                                        <input type="checkbox" id="selectAll">
-                                        <label for="selectAll"></label>
-                                    </span>
-                                </th>
-                                <th>#</th>
-                                <th>Name</th>					
-                                <th>Date</th>					
-                                <th>Description</th>
-                                <th>Image</th>
-                                <th>Source</th>
-                                <th>Trailer</th>
-                                <th>Like Count</th>
-                                <th>Rate</th>
-                                <th>Status</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <c:forEach items="${listB}" var="m">
-                                <tr>
-                                    <td>
-                                        <span class="custom-checkbox">
-                                            <input type="checkbox" id="checkbox${m.id}" class="Rowchecked" name="options[]" value="${user.id}">
-                                            <label for="checkbox${m.id}"></label>
-                                        </span>
-                                    </td>
-                                    <td>${m.id}</td>
-                                    <td>${m.name}</td>
-                                    <td>${m.date}</td>
-                                    <td>${m.descript}</td>
-                                    <td>${m.img}</td>
-                                    <td>${m.src}</td>
-                                    <td>${m.trail}</td>
-                                    <td>${m.likecount}</td>
-                                    <td>${m.rate}</td>
-                                    <c:choose>
-                                        <c:when test="${user.status eq 1}">
-                                            <td><span class="status text-success">&bull;</span> Active</td>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <td><span class="status text-danger">&bull;</span> Suspended</td>                        
-                                        </c:otherwise>
-                                    </c:choose>
-                                    <td>
-                                        <a href="updateuser?uid=${user.id}" class="edit"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
-                                        <a href="deleteuser?uid=${user.id}" class="delete"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
-                                    </td>
-                                </tr>
-                            </c:forEach>
-                        </tbody>
-
-                    </table>
-                    <%-- footer paging --%>
-                    <div class="clearfix">
-                        <div class="hint-text">Showing <b>${listA.size()}</b> out of <b>${numUser}</b> entries</div>
-                        <ul class="pagination">
-                            <c:set var="c" value="1"></c:set>
-                            <c:forEach begin="1" end="${endPage}" var ="i">
+                            <c:forEach begin="1" end="${endPage1}" var ="i">
                                 <c:choose>
                                     <c:when test="${currPage eq i}">
                                         <li id="${i}" class="page-item page-user active"><a href="manageuser?index=${i}" class="page-link">${i}</a></li>
