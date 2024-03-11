@@ -12,7 +12,10 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
-import java.io.File;
+import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Arrays;
 
 @MultipartConfig(fileSizeThreshold = 1024 * 1024 * 2, // 2MB
         maxFileSize = 1024 * 1024 * 10, // 10MB
@@ -37,7 +40,8 @@ public class InsertMovieServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        request.setAttribute("movie", dao.getMovies());
+        request.getRequestDispatcher("managemovie").forward(request, response);
     }
 
     /**
@@ -52,38 +56,39 @@ public class InsertMovieServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         int status;
+        PrintWriter out = response.getWriter();
+
+        String[] genres = request.getParameterValues("genres");
+        String[] actors = request.getParameterValues("actors");
+        out.println(Arrays.toString(genres));
 
         String name = request.getParameter("nameinsert");
         String date = request.getParameter("dateinsert");
         String description = request.getParameter("descriptioninsert");
-        Part filePart = request.getPart("imginsert");
         String source = request.getParameter("sourceinsert");
         String trailer = request.getParameter("trailerinsert");
         String status_string = request.getParameter("statusinsert");
 
-        String fileName = filePart.getSubmittedFileName();
-        isDirExist("/images/uploads/movies/");
-        String filePath = "/images/uploads/movies/" + fileName;
+        Part filePart = request.getPart("imginsert");
+
+        String realPath = request.getServletContext().getRealPath("/images/uploads/movies");
+
+        String fileName = Path.of(filePart.getSubmittedFileName()).getFileName().toString();
+
+        if (!Files.exists(Path.of(realPath))) {
+            Files.createDirectory(Path.of(realPath));
+        }
+
+        filePart.write(realPath + "/" + fileName);
+
+        String filePath = "build/web/images/uploads/movies/" + fileName;
         try {
             status = Integer.parseInt(status_string);
 
-            dao.insertMovie(name, date, description, filePath, source, trailer, status, 1);
+            dao.insertMovie(name, date, description, filePath, source, trailer, status, 1, genres, actors);
             response.sendRedirect("managemovie");
         } catch (NumberFormatException e) {
         }
-    }
-
-    public static boolean isDirExist(String directoryPath) {
-        File directory = new File(directoryPath);
-
-        // Kiểm tra xem thư mục đã tồn tại chưa
-        if (!directory.exists()) {
-            // Nếu không tồn tại, thì tạo mới
-            return directory.mkdirs();
-        }
-
-        // Nếu thư mục đã tồn tại, không cần tạo mới
-        return true;
     }
 
     /**
@@ -96,4 +101,7 @@ public class InsertMovieServlet extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
+    public static void main(String[] args) {
+        System.out.println("hehe");
+    }
 }

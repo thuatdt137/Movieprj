@@ -68,7 +68,7 @@ public class UpdateMovieServlet extends HttpServlet {
             role = Integer.parseInt(role_string);
             status = Integer.parseInt(status_string);
 
-            dao.updateDB(name, username, password, email, role, status, id);
+            dao.updateUser(name, username, password, email, role, status, id);
             response.sendRedirect("manageuser");
         } catch (NumberFormatException e) {
         }

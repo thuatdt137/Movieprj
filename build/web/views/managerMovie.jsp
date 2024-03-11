@@ -19,7 +19,9 @@
         <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
-
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.css">
+        <script src="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.js"></script>
 
     </head>
 
@@ -49,8 +51,8 @@
                                     </span>
                                 </th>
                                 <th>#</th>
-                                <th>Name</th>					
-                                <th>Date</th>					
+                                <th>Name</th>
+                                <th>Date</th>
                                 <th>Description</th>
                                 <th>Image</th>
                                 <th>Source</th>
@@ -89,7 +91,7 @@
                                     </c:choose>
                                     <td>
                                         <a href="updatemovie?uid=${m.id}" class="edit"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
-                                        <a href="deletemovie?uid=${m.id}" class="delete"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
+                                        <a href="deletemovie?mid=${m.id}" class="delete"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
                                     </td>
                                 </tr>
                             </c:forEach>
@@ -150,6 +152,22 @@
                         <div class="form-group">
                             <label>Trailer</label>
                             <input type="text" class="form-control" name="trailerinsert" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Genre</label>
+                            <select name="genres" id="choices-multiple-remove-button" placeholder="Select upto 3 genres" multiple>
+                                <c:forEach items="${genres_list}" var="genre">
+                                    <option value="${genre.id}">${genre.name}</option>
+                                </c:forEach>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Genre</label>
+                            <select name="actors" id="choices-multiple-remove-button-actor" placeholder="Select upto 5 actor" multiple>
+                                <c:forEach items="${actors_list}" var="actor">
+                                    <option value="${actor.id}">${actor.name}</option>
+                                </c:forEach>
+                            </select>
                         </div>
                         <div class="form-group">
                             <label>Status</label>
@@ -419,6 +437,24 @@
     }
 </style>
 <script type="text/javascript">
+    $(document).ready(function () {
+
+        var multipleCancelButton = new Choices('#choices-multiple-remove-button', {
+            removeItemButton: true,
+            maxItemCount: 3,
+            searchResultLimit: 10,
+            renderChoiceLimit: 10
+        });
+    });
+    $(document).ready(function () {
+
+        var multipleCancelButton = new Choices('#choices-multiple-remove-button-actor', {
+            removeItemButton: true,
+            maxItemCount: 5,
+            searchResultLimit: 10,
+            renderChoiceLimit: 10
+        });
+    });
     function deleteRow() {
         var checkedElements = document.querySelectorAll('.Rowchecked:checked');
 
@@ -428,7 +464,7 @@
             checkedValues.push(element.value);
         });
         var queryString = checkedValues.join(',');
-        window.location = "deletelistuser?listuser=" + encodeURIComponent(queryString);
+        window.location = "deletelistmovie?listmovie=" + encodeURIComponent(queryString);
 
     }
     $(document).ready(function () {

@@ -48,6 +48,14 @@
         <servlet-name>InsertMovieServlet</servlet-name>
         <servlet-class>controllers.InsertMovieServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>DeleteMovieServlet</servlet-name>
+        <servlet-class>controllers.DeleteMovieServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>DeleteListMovieServlet</servlet-name>
+        <servlet-class>controllers.DeleteListMovieServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>RegisterServlet</servlet-name>
         <url-pattern>/register</url-pattern>
@@ -95,5 +103,13 @@
     <servlet-mapping>
         <servlet-name>InsertMovieServlet</servlet-name>
         <url-pattern>/insertmovie</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DeleteMovieServlet</servlet-name>
+        <url-pattern>/deletemovie</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DeleteListMovieServlet</servlet-name>
+        <url-pattern>/deletelistmovie</url-pattern>
     </servlet-mapping>
 </web-app>

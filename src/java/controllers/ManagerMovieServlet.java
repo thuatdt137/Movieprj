@@ -84,6 +84,8 @@ public class ManagerMovieServlet extends HttpServlet {
         ArrayList<Movie> list_movie = dao.pagingMovies(index, numPerPage);
 
         request.setAttribute("listA", list_movie);
+        request.setAttribute("genres_list", dao.getGenres());
+        request.setAttribute("actors_list", dao.getActors());
 
         request.setAttribute("num", count);
         request.setAttribute("currPage", index);

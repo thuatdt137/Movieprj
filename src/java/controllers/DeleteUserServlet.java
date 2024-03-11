@@ -65,7 +65,7 @@ public class DeleteUserServlet extends HttpServlet {
         int id;
         try {
             id = Integer.parseInt(id_string);
-            dao.deleteFromDB(id);
+            dao.deleteUser(id);
             response.sendRedirect("manageuser");
         } catch (NumberFormatException e) {
             System.out.println(e);

@@ -319,9 +319,34 @@ public class DAO {
         for (Movie movy : movies) {
             if (movy.getId() == id) {
                 movie = movy;
+                break;
             }
         }
         return movie;
+    }
+
+    public int getIDMovieByTitle(String title) {
+        int id = -1;
+        ArrayList<Movie> movies = INSTANCE.getMovies();
+        for (Movie movy : movies) {
+            if (movy.getTitle().equals(title)) {
+                id = movy.getId();
+                break;
+            }
+        }
+        return id;
+    }
+
+    public int getIDGenreByName(String name) {
+        int id = -1;
+        ArrayList<Genre> genres = INSTANCE.getGenres();
+        for (Genre genre : genres) {
+            if (genre.getName().equals(name)) {
+                id = genre.getId();
+                break;
+            }
+        }
+        return id;
     }
 
     public ArrayList<Movie> pagingMovies(int index, int numPerPage) {
@@ -330,30 +355,20 @@ public class DAO {
             System.out.println("Loading data...");
             String sql = """
                          SELECT
-                                 M.MovieID,
-                                 M.Title AS MovieTitle,
-                                 M.ReleaseDate,
-                                 M.Description,
-                                 M.ThumbSource,
-                                 M.SourceLink,
-                                 M.TrailerLink,
-                                 M.Status AS MovieStatus,
-                                 M.StatusRelease,
-                                 (SELECT COUNT(1) FROM UserFavoriteMovies WHERE MovieID = M.MovieID AND isLove = 1) AS NumberOfLikes
-                             FROM
-                                 Movie AS M
-                             JOIN
-                                 MovieGenre AS MG ON M.MovieID = MG.MovieID
-                             JOIN
-                                 Genre AS G ON MG.GenreID = G.GenreID
-                             GROUP BY
-                                 M.MovieID, M.Title, M.ReleaseDate, M.Description, M.ThumbSource, M.SourceLink, M.TrailerLink, M.Status, M.StatusRelease
-                             HAVING
-                                 COUNT(M.MovieID) > 1
-                             ORDER BY
-                                 M.MovieID
-                             OFFSET ? ROWS
-                             FETCH NEXT ? ROWS ONLY;""";
+                             Movie.*,
+                             ISNULL(COUNT(UserFavoriteMovies.MovieID), 0) AS NumberOfLikes
+                         FROM
+                             Movie
+                         LEFT JOIN
+                             UserFavoriteMovies ON Movie.MovieID = UserFavoriteMovies.MovieID AND UserFavoriteMovies.isLove = 1
+                         GROUP BY
+                             Movie.MovieID, Movie.Title, Movie.ReleaseDate, Movie.Description, Movie.ThumbSource, Movie.SourceLink, Movie.TrailerLink, Movie.Status, Movie.StatusRelease
+                         ORDER BY
+                             Movie.MovieID
+                         OFFSET
+                             ? ROWS
+                         FETCH NEXT
+                             ? ROWS ONLY;""";
             PreparedStatement ps = con.prepareStatement(sql);
             ps.setInt(1, (index - 1) * numPerPage);
             ps.setInt(2, numPerPage);
@@ -361,13 +376,13 @@ public class DAO {
             while (rs.next()) {
                 Movie h = new Movie();
                 h.setId(rs.getInt("MovieID"));
-                h.setTitle(rs.getString("MovieTitle"));
+                h.setTitle(rs.getString("Title"));
                 h.setDate(rs.getDate("ReleaseDate"));
                 h.setDescript(rs.getString("Description"));
                 h.setImg(rs.getString("ThumbSource"));
                 h.setSrc(rs.getString("SourceLink"));
                 h.setTrail(rs.getString("TrailerLink"));
-                h.setStatus(rs.getInt("MovieStatus"));
+                h.setStatus(rs.getInt("Status"));
                 h.setStatusrelease(rs.getInt("StatusRelease"));
                 h.setLikecount(rs.getInt("NumberOfLikes"));
                 movies.add(h);
@@ -387,40 +402,28 @@ public class DAO {
             System.out.println("Loading data...");
             String sql = """
                          SELECT
-                             M.MovieID,
-                             M.Title AS MovieTitle,
-                             M.ReleaseDate,
-                             M.Description,
-                             M.ThumbSource,
-                             M.SourceLink,
-                             M.TrailerLink,
-                             M.Status AS MovieStatus,
-                             M.StatusRelease,
-                             (SELECT COUNT(1) FROM UserFavoriteMovies WHERE MovieID = M.MovieID AND isLove = 1) AS NumberOfLikes
+                             Movie.*,
+                             ISNULL(COUNT(UserFavoriteMovies.MovieID), 0) AS likeCount
                          FROM
-                             Movie AS M
-                         JOIN
-                             MovieGenre AS MG ON M.MovieID = MG.MovieID
-                         JOIN
-                             Genre AS G ON MG.GenreID = G.GenreID
+                             Movie
+                         LEFT JOIN
+                             UserFavoriteMovies ON Movie.MovieID = UserFavoriteMovies.MovieID AND UserFavoriteMovies.isLove = 1
                          GROUP BY
-                             M.MovieID, M.Title, M.ReleaseDate, M.Description, M.ThumbSource, M.SourceLink, M.TrailerLink, M.Status, M.StatusRelease
-                         HAVING
-                             COUNT(M.MovieID) > 1;""";
+                             Movie.MovieID, Movie.Title, Movie.ReleaseDate, Movie.Description, Movie.ThumbSource, Movie.SourceLink, Movie.TrailerLink, Movie.Status, Movie.StatusRelease;""";
             PreparedStatement ps = con.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 Movie h = new Movie();
                 h.setId(rs.getInt("MovieID"));
-                h.setTitle(rs.getString("MovieTitle"));
+                h.setTitle(rs.getString("Title"));
                 h.setDate(rs.getDate("ReleaseDate"));
                 h.setDescript(rs.getString("Description"));
                 h.setImg(rs.getString("ThumbSource"));
                 h.setSrc(rs.getString("SourceLink"));
                 h.setTrail(rs.getString("TrailerLink"));
-                h.setStatus(rs.getInt("MovieStatus"));
+                h.setStatus(rs.getInt("Status"));
                 h.setStatusrelease(rs.getInt("StatusRelease"));
-                h.setLikecount(rs.getInt("NumberOfLikes"));
+                h.setLikecount(rs.getInt("likeCount"));
                 movies.add(h);
             }
 
@@ -462,7 +465,7 @@ public class DAO {
         return null;
     }
 
-    public void updateDB(String Name, String Username, String Password, String Email, int Role, int Status, int UserID) {
+    public void updateUser(String Name, String Username, String Password, String Email, int Role, int Status, int UserID) {
 
         System.out.println("Update data...");
         String sql = "UPDATE Userdb SET Name = ?, Username = ?, Password = ?, Email = ?, Role = ?, Status = ? WHERE UserID = ?;";
@@ -487,7 +490,34 @@ public class DAO {
         }
     }
 
-    public void deleteFromDB(int userid) {
+    public void deleteMovie(int movie_id) {
+        String deleteFavoriteMoviesQuery = """
+                                           DELETE FROM UserFavoriteMovies WHERE MovieID = ?;
+                                           DELETE FROM MovieActor WHERE MovieID = ?;
+                                           DELETE FROM MovieGenre WHERE MovieID = ?;
+                                           DELETE FROM Movie WHERE MovieID = ?""";
+        try {
+            PreparedStatement statement = con.prepareStatement(deleteFavoriteMoviesQuery);
+            statement.setInt(1, movie_id);
+            statement.setInt(2, movie_id);
+            statement.setInt(3, movie_id);
+            statement.setInt(4, movie_id);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+        }
+
+        // Xóa người dùng từ bảng Userdb
+        String deleteUserQuery = "DELETE FROM Userdb WHERE UserID = ?";
+
+        try {
+            PreparedStatement statement = con.prepareStatement(deleteUserQuery);
+            statement.setInt(1, movie_id);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+        }
+    }
+
+    public void deleteUser(int userid) {
         String deleteFavoriteMoviesQuery = "DELETE FROM UserFavoriteMovies WHERE UserID = ?";
         try {
             PreparedStatement statement = con.prepareStatement(deleteFavoriteMoviesQuery);
@@ -507,7 +537,45 @@ public class DAO {
         }
     }
 
-    public boolean insertMovie(String title, String dateRelease, String descript, String img, String source, String trailer, int Status, int statusrelease) {
+    public void insertMovieGenre(int idMovie, int idGenre) {
+        System.out.println("Saving data...");
+        String sql = """
+                     INSERT INTO MovieGenre (MovieID, GenreID)
+                     VALUES
+                         (?, ?)""";
+        try {
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setInt(1, idMovie);
+            ps.setInt(2, idGenre);
+            int rs = ps.executeUpdate();
+            if (rs != 0) {
+                System.out.println("add success");
+            }
+        } catch (SQLException e) {
+            status = "Error at save MovieGenre " + e.getMessage();
+        }
+    }
+
+    public void insertMovieActor(int idMovie, int idActor) {
+        System.out.println("Saving data...");
+        String sql = """
+                 INSERT INTO MovieActor (MovieID, ActorID)
+                 VALUES
+                     (?, ?)""";
+        try {
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setInt(1, idMovie);
+            ps.setInt(2, idActor);
+            int rs = ps.executeUpdate();
+            if (rs != 0) {
+                System.out.println("Add success");
+            }
+        } catch (SQLException e) {
+            status = "Error at save MovieActor " + e.getMessage();
+        }
+    }
+
+    public boolean insertMovie(String title, String dateRelease, String descript, String img, String source, String trailer, int Status, int statusrelease, String[] genres, String[] actors) {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         java.util.Date date = null;
         boolean check = false;
@@ -538,6 +606,25 @@ public class DAO {
             }
         } catch (SQLException | ParseException e) {
             status = "Error at save Users " + e.getMessage();
+        }
+        int id_movie = INSTANCE.getIDMovieByTitle(title);
+
+        for (String genre : genres) {
+
+            try {
+                int id_genre = Integer.parseInt(genre);
+                INSTANCE.insertMovieGenre(id_movie, id_genre);
+            } catch (NumberFormatException e) {
+            }
+        }
+        for (String actor : actors) {
+
+            try {
+                int id_actor = Integer.parseInt(actor);
+                INSTANCE.insertMovieActor(id_movie, id_actor);
+            } catch (NumberFormatException e) {
+            }
+
         }
         return check;
     }
@@ -622,20 +709,32 @@ public class DAO {
         return list;
     }
 
+    public void deleteListMovie(String list_string) {
+        list_string = list_string.trim();
+        String[] list = list_string.split(",");
+        for (String string : list) {
+            try {
+                int id = Integer.parseInt(string);
+                INSTANCE.deleteMovie(id);
+            } catch (NumberFormatException e) {
+            }
+        }
+    }
+
     public void deleteListUser(String list_string) {
         list_string = list_string.trim();
         String[] list = list_string.split(",");
         for (String string : list) {
             try {
                 int id = Integer.parseInt(string);
-                INSTANCE.deleteFromDB(id);
+                INSTANCE.deleteUser(id);
             } catch (NumberFormatException e) {
             }
         }
     }
 
     public static void main(String[] args) {
-        INSTANCE.deleteFromDB(5);
+        INSTANCE.deleteUser(5);
 
     }
 }
