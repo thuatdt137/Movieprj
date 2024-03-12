@@ -17,52 +17,60 @@
     <body>
         <div class="modal-dialog">
             <div class="modal-content">
-                <form action="updateuser" method="post">
+                <form action="updatemovie" method="post" enctype="multipart/form-data">
                     <div class="modal-header">
                         <h4 class="modal-title">Edit Movie</h4>
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
                             <label>ID</label>
-                            <input type="text" class="form-control" name="id" value="${userSelected.id}" readonly>
+                            <input type="text" class="form-control" name="id" value="${movieSelected.id}" readonly>
                         </div>
                         <div class="form-group">
-                            <label>Name</label>
-                            <input type="text" class="form-control" name="name" value="${userSelected.name}" required>
+                            <label>Title</label>
+                            <input type="text" class="form-control" name="title" value="${movieSelected.title}" required>
                         </div>
                         <div class="form-group">
-                            <label>Username</label>
-                            <input type="text" class="form-control" name="username" value="${userSelected.username}" required>
+                            <label>Date</label>
+                            <input type="date" class="form-control" name="date" value="${movieSelected.date}" required>
                         </div>
                         <div class="form-group">
-                            <label>Email</label>
-                            <input type="email" class="form-control" name="email" value="${userSelected.password}" required>
+                            <label>Description</label>
+                            <input type="text" class="form-control" name="description" value="${movieSelected.descript}" required>
                         </div>
                         <div class="form-group">
-                            <label>Password</label>
-                            <input type="text" class="form-control" name="password" value="${userSelected.email}" required>
+                            <label>Image</label>
+                            <input type="file" accept="image/*" class="form-control" name="image">
                         </div>
                         <div class="form-group">
-                            <label>Role</label>
-                            <select id="role" name="role" value="${userSelected.role}" class="form-control">
+                            <label>Source</label>
+                            <input type="text" class="form-control" name="source" value="${movieSelected.src}" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Trailer</label>
+                            <input type="text" class="form-control" name="trailer" value="${movieSelected.trail}" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Status</label>
+                            <select id="status" name="status" value="${movieSelected.status}" class="form-control">
                                 <c:choose>
-                                    <c:when test="${userSelected.role eq 0}">
-                                        <option value="0" selected>Admin</option>
-                                        <option value="1">User</option>
+                                    <c:when test="${movieSelected.status eq 0}">
+                                        <option value="0" selected>Suspended</option>
+                                        <option value="1">Active</option>
                                     </c:when>
                                     <c:otherwise>
-                                        <option value="0">Admin</option>
-                                        <option value="1" selected>User</option>
+                                        <option value="0">Suspended</option>
+                                        <option value="1" selected>Active</option>
                                     </c:otherwise>
                                 </c:choose>
 
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>Status</label>
-                            <select id="status" name="status" value="${userSelected.status}" class="form-control">
+                            <label>Status Release</label>
+                            <select id="statusrelease" name="statusrelease" value="${movieSelected.statusrelease}" class="form-control">
                                 <c:choose>
-                                    <c:when test="${userSelected.status eq 0}">
+                                    <c:when test="${movieSelected.statusrelease eq 0}">
                                         <option value="0" selected>Suspended</option>
                                         <option value="1">Active</option>
                                     </c:when>
@@ -76,8 +84,8 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button onclick="location.href = 'manageuser'" class="btn btn-default" value="Cancel">Cancel</button>
-                        <input type="submit" class="btn btn-success" value="updateuser">
+                        <button onclick="location.href = 'managemovie'" class="btn btn-default" value="Cancel">Cancel</button>
+                        <input type="submit" class="btn btn-success" value="updatemovie">
                     </div>
                 </form>
             </div>

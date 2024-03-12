@@ -76,7 +76,7 @@
                                     <td>${m.title}</td>
                                     <td>${m.date}</td>
                                     <td>${m.descript}</td>
-                                    <td><img src="${m.img}" alt="" style="width: 75px; height: 115px"></td>
+                                    <td><img src="${urlImg}/${m.img}" alt="" style="width: 75px; height: 115px"></td>
                                     <td>${m.src}</td>
                                     <td>${m.trail}</td>
                                     <td>${m.likecount}</td>
@@ -90,7 +90,7 @@
                                         </c:otherwise>
                                     </c:choose>
                                     <td>
-                                        <a href="updatemovie?uid=${m.id}" class="edit"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
+                                        <a href="updatemovie?mid=${m.id}" class="edit"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
                                         <a href="deletemovie?mid=${m.id}" class="delete"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
                                     </td>
                                 </tr>

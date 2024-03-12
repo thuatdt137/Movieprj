@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="6.0" xmlns="https://jakarta.ee/xml/ns/jakartaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd">
+    
     <servlet>
         <servlet-name>RegisterServlet</servlet-name>
         <servlet-class>controllers.RegisterServlet</servlet-class>
@@ -56,6 +57,10 @@
         <servlet-name>DeleteListMovieServlet</servlet-name>
         <servlet-class>controllers.DeleteListMovieServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ManagerActorServlet</servlet-name>
+        <servlet-class>controllers.ManagerActorServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>RegisterServlet</servlet-name>
         <url-pattern>/register</url-pattern>
@@ -96,6 +101,10 @@
         <servlet-name>ManagerMovieServlet</servlet-name>
         <url-pattern>/managemovie</url-pattern>
     </servlet-mapping>
+    <context-param>
+        <param-name>Urlactors</param-name>
+        <param-value>images/uploads/actors</param-value>
+    </context-param>
     <servlet-mapping>
         <servlet-name>UpdateMovieServlet</servlet-name>
         <url-pattern>/updatemovie</url-pattern>
@@ -112,4 +121,13 @@
         <servlet-name>DeleteListMovieServlet</servlet-name>
         <url-pattern>/deletelistmovie</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ManagerActorServlet</servlet-name>
+        <url-pattern>/manageactor</url-pattern>
+    </servlet-mapping>
+    <context-param>
+        <param-name>UrlImage</param-name>
+        <param-value>images/uploads/movies</param-value>
+    </context-param>
+
 </web-app>

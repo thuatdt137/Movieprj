@@ -26,6 +26,8 @@ import java.util.Arrays;
  */
 public class InsertMovieServlet extends HttpServlet {
 
+    //String urlImgPath = getServletContext().getInitParameter("UrlImage");
+
     DAO dao = DAO.getINSTANCE();
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -71,7 +73,7 @@ public class InsertMovieServlet extends HttpServlet {
 
         Part filePart = request.getPart("imginsert");
 
-        String realPath = request.getServletContext().getRealPath("/images/uploads/movies");
+        String realPath = request.getServletContext().getRealPath("images/uploads/movies");
 
         String fileName = Path.of(filePart.getSubmittedFileName()).getFileName().toString();
 
@@ -79,13 +81,12 @@ public class InsertMovieServlet extends HttpServlet {
             Files.createDirectory(Path.of(realPath));
         }
 
-        filePart.write(realPath + "/" + fileName);
+        filePart.write(realPath + "\\" + fileName);
 
-        String filePath = "build/web/images/uploads/movies/" + fileName;
         try {
             status = Integer.parseInt(status_string);
 
-            dao.insertMovie(name, date, description, filePath, source, trailer, status, 1, genres, actors);
+            dao.insertMovie(name, date, description, fileName, source, trailer, status, 1, genres, actors);
             response.sendRedirect("managemovie");
         } catch (NumberFormatException e) {
         }
@@ -101,7 +102,4 @@ public class InsertMovieServlet extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
-    public static void main(String[] args) {
-        System.out.println("hehe");
-    }
 }

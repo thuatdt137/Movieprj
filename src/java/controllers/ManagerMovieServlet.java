@@ -68,6 +68,7 @@ public class ManagerMovieServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+        String urlImgPath = getServletContext().getInitParameter("UrlImage");
         String indexPage = request.getParameter("index");
 
         int index = 1;
@@ -90,6 +91,7 @@ public class ManagerMovieServlet extends HttpServlet {
         request.setAttribute("num", count);
         request.setAttribute("currPage", index);
         request.setAttribute("endPage", endPage);
+        request.setAttribute("urlImg", urlImgPath);
 
         request.getRequestDispatcher("views/managerMovie.jsp").forward(request, response);
 

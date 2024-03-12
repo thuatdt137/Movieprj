@@ -195,6 +195,35 @@ public class DAO {
         return actors;
     }
 
+    public ArrayList<Actor> pagingActors(int index, int numPerPage) {
+        ArrayList<Actor> actors = new ArrayList<>();
+        try {
+            System.out.println("Loading data...");
+            String sql = """
+                         SELECT * from Actor 
+                         order by ActorID
+                         OFFSET ? ROWS FETCH NEXT ? ROWS ONLY;""";
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setInt(1, (index - 1) * numPerPage);
+            ps.setInt(2, numPerPage);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Actor h = new Actor();
+                h.setId(rs.getInt("ActorID"));
+                h.setName(rs.getString("ActorName"));
+                h.setSrc(rs.getString("ActorImg"));
+                h.setBirthday(rs.getDate("BirthDate"));
+                h.setDescript(rs.getString("Description"));
+                h.setStatus(rs.getInt("Status"));
+                actors.add(h);
+            }
+
+        } catch (SQLException e) {
+            status = "Error at read Genres " + e.getMessage();
+        }
+        return actors;
+    }
+
     public ArrayList<Actor> getActors() {
         ArrayList<Actor> actors = new ArrayList<>();
         try {
@@ -209,6 +238,7 @@ public class DAO {
                 h.setSrc(rs.getString("ActorImg"));
                 h.setBirthday(rs.getDate("BirthDate"));
                 h.setDescript(rs.getString("Description"));
+                h.setStatus(rs.getInt("Status"));
                 actors.add(h);
             }
 
@@ -465,6 +495,91 @@ public class DAO {
         return null;
     }
 
+    public void updateMoviewithoutImg(int movieID, String newTitle, String dateRelease, String newDescription, String newSourceLink, String newTrailerLink, int newStatus, int newStatusRelease) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        java.util.Date date = null;
+        System.out.println("Updating movie...");
+        String sql = """
+                 UPDATE Movie
+                 SET
+                     Title = ?,
+                     ReleaseDate = ?,
+                     Description = ?,
+                     SourceLink = ?,
+                     TrailerLink = ?,
+                     Status = ?,
+                     StatusRelease = ?
+                 WHERE
+                     MovieID = ?""";
+
+        try {
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            date = formatter.parse(dateRelease);
+
+            ps.setString(1, newTitle);
+            ps.setDate(2, new java.sql.Date(date.getTime()));
+            ps.setString(3, newDescription);
+            ps.setString(4, newSourceLink);
+            ps.setString(5, newTrailerLink);
+            ps.setInt(6, newStatus);
+            ps.setInt(7, newStatusRelease);
+            ps.setInt(8, movieID);
+
+            int rs = ps.executeUpdate();
+            if (rs != 0) {
+                System.out.println("Update success");
+            } else {
+                System.out.println("No movie found with MovieID: " + movieID);
+            }
+        } catch (SQLException | ParseException e) {
+            status = "Error at save Users " + e.getMessage();
+        }
+    }
+    public void updateMovie(int movieID, String newTitle, String dateRelease, String newDescription, String newThumbSource, String newSourceLink, String newTrailerLink, int newStatus, int newStatusRelease) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        java.util.Date date = null;
+        System.out.println("Updating movie...");
+        String sql = """
+                 UPDATE Movie
+                 SET
+                     Title = ?,
+                     ReleaseDate = ?,
+                     Description = ?,
+                     ThumbSource = ?,
+                     SourceLink = ?,
+                     TrailerLink = ?,
+                     Status = ?,
+                     StatusRelease = ?
+                 WHERE
+                     MovieID = ?""";
+
+        try {
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            date = formatter.parse(dateRelease);
+
+            ps.setString(1, newTitle);
+            ps.setDate(2, new java.sql.Date(date.getTime()));
+            ps.setString(3, newDescription);
+            ps.setString(4, newThumbSource);
+            ps.setString(5, newSourceLink);
+            ps.setString(6, newTrailerLink);
+            ps.setInt(7, newStatus);
+            ps.setInt(8, newStatusRelease);
+            ps.setInt(9, movieID);
+
+            int rs = ps.executeUpdate();
+            if (rs != 0) {
+                System.out.println("Update success");
+            } else {
+                System.out.println("No movie found with MovieID: " + movieID);
+            }
+        } catch (SQLException | ParseException e) {
+            status = "Error at save Users " + e.getMessage();
+        }
+    }
+
     public void updateUser(String Name, String Username, String Password, String Email, int Role, int Status, int UserID) {
 
         System.out.println("Update data...");
@@ -652,6 +767,21 @@ public class DAO {
             status = "Error at save Users " + e.getMessage();
         }
         return check;
+    }
+
+    public int getTotalActor() {
+        String sql = "select count(*) from Actor";
+        try {
+            PreparedStatement ps = con.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                return rs.getInt(1);
+            }
+
+        } catch (SQLException e) {
+            status = "Error at save Users " + e.getMessage();
+        }
+        return 0;
     }
 
     public int getTotalMovie() {

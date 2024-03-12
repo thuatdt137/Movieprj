@@ -7,17 +7,26 @@ package controllers;
 import dal.DAO;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Part;
+import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import models.*;
 
+@MultipartConfig(fileSizeThreshold = 1024 * 1024 * 2, // 2MB
+        maxFileSize = 1024 * 1024 * 10, // 10MB
+        maxRequestSize = 1024 * 1024 * 50)   // 50MB
 /**
  *
  * @author thuat
  */
 public class UpdateMovieServlet extends HttpServlet {
 
+    //String urlImgPath = getServletContext().getInitParameter("Urlactors");
     DAO dao = DAO.getINSTANCE();
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -32,7 +41,10 @@ public class UpdateMovieServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String id_string = request.getParameter("uid");
+        PrintWriter out = response.getWriter();
+
+        String id_string = request.getParameter("mid");
+        out.println(id_string);
         int id;
         try {
             id = Integer.parseInt(id_string);
@@ -54,24 +66,45 @@ public class UpdateMovieServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        int id, role, status;
+        PrintWriter out = response.getWriter();
+
+        int id = 0, status = 0, statusRelease = 0;
 
         String id_string = request.getParameter("id");
-        String name = request.getParameter("name");
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
-        String email = request.getParameter("email");
-        String role_string = request.getParameter("role");
+        String title = request.getParameter("title");
+        String date = request.getParameter("date");
+        String descript = request.getParameter("description");
+        String source = request.getParameter("source");
+        String trailer = request.getParameter("trailer");
         String status_string = request.getParameter("status");
+        String statusRelease_string = request.getParameter("statusrelease");
+        Part filePart = request.getPart("image");
         try {
             id = Integer.parseInt(id_string);
-            role = Integer.parseInt(role_string);
             status = Integer.parseInt(status_string);
+            statusRelease = Integer.parseInt(statusRelease_string);
 
-            dao.updateUser(name, username, password, email, role, status, id);
-            response.sendRedirect("manageuser");
         } catch (NumberFormatException e) {
         }
+        if (filePart != null && filePart.getSize() > 0) {
+            out.print("hehe");
+            String urlImgPath = "images/uploads/movies";
+            String realPath = request.getServletContext().getRealPath(urlImgPath);
+
+            String fileName = Path.of(filePart.getSubmittedFileName()).getFileName().toString();
+
+            if (!Files.exists(Path.of(realPath))) {
+                Files.createDirectory(Path.of(realPath));
+            }
+
+            filePart.write(realPath + "\\" + fileName);
+
+            dao.updateMovie(id, title, date, descript, fileName, source, trailer, status, statusRelease);
+        } else {
+            dao.updateMoviewithoutImg(id, title, date, descript, source, trailer, status, statusRelease);
+        }
+
+        response.sendRedirect("managemovie");
     }
 
     /**

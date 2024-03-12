@@ -17,15 +17,25 @@ public class Actor {
     private String src;
     private Date birthday;
     private String descript;
+    private int status;
 
     public Actor() {
     }
 
-    public Actor(String name, String src, Date birthday, String descript) {
+    public Actor(String name, String src, Date birthday, String descript, int status) {
         this.name = name;
         this.src = src;
         this.birthday = birthday;
         this.descript = descript;
+        this.status = status;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     public int getId() {
