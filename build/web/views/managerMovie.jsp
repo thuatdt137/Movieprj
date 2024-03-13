@@ -33,9 +33,9 @@
                         <div class="col-sm-6">
                             <h2><b>Manager Movie</b></h2>
                         </div>
-                        <div class="col-sm-6 user-table">
-                            <a href="#addUserModall" class="btn btn-success" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Add New User</span></a>
-                            <a href="#deleteListUser" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>Delete</span></a>						
+                        <div class="col-sm-6">
+                            <a href="#addMovieModall" class="btn btn-success" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Add New User</span></a>
+                            <a href="#deleteListMovie" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>Delete</span></a>						
                         </div>
                     </div>
                 </div>
@@ -120,7 +120,7 @@
         </div>
     </div>
     <!-- Add Modal HTML -->
-    <div id="addUserModall" class="modal fade">
+    <div id="addMovieModall" class="modal fade">
         <div class="modal-dialog">
             <div class="modal-content">
                 <form action="insertmovie" method="post" enctype="multipart/form-data">
@@ -186,7 +186,7 @@
         </div>
     </div>
     <!-- Delete Modal HTML -->
-    <div id="deleteListUser" class="modal fade">
+    <div id="deleteListMovie" class="modal fade">
         <div class="modal-dialog">
             <div class="modal-content">
                 <form>
@@ -438,36 +438,6 @@
 </style>
 <script type="text/javascript">
     $(document).ready(function () {
-
-        var multipleCancelButton = new Choices('#choices-multiple-remove-button', {
-            removeItemButton: true,
-            maxItemCount: 3,
-            searchResultLimit: 10,
-            renderChoiceLimit: 10
-        });
-    });
-    $(document).ready(function () {
-
-        var multipleCancelButton = new Choices('#choices-multiple-remove-button-actor', {
-            removeItemButton: true,
-            maxItemCount: 5,
-            searchResultLimit: 10,
-            renderChoiceLimit: 10
-        });
-    });
-    function deleteRow() {
-        var checkedElements = document.querySelectorAll('.Rowchecked:checked');
-
-        var checkedValues = [];
-
-        checkedElements.forEach(function (element) {
-            checkedValues.push(element.value);
-        });
-        var queryString = checkedValues.join(',');
-        window.location = "deletelistmovie?listmovie=" + encodeURIComponent(queryString);
-
-    }
-    $(document).ready(function () {
         // Activate tooltip
         $('[data-toggle="tooltip"]').tooltip();
 
@@ -490,5 +460,39 @@
             }
         });
     });
+
+    function deleteRow() {
+        var checkedElements = document.querySelectorAll('.Rowchecked:checked');
+
+        var checkedValues = [];
+
+        checkedElements.forEach(function (element) {
+            checkedValues.push(element.value);
+        });
+        var queryString = checkedValues.join(',');
+        window.location = "deletelistmovie?listmovie=" + encodeURIComponent(queryString);
+
+    }
+
+    $(document).ready(function () {
+
+        var multipleCancelButton = new Choices('#choices-multiple-remove-button', {
+            removeItemButton: true,
+            maxItemCount: 3,
+            searchResultLimit: 10,
+            renderChoiceLimit: 10
+        });
+    });
+    $(document).ready(function () {
+
+        var multipleCancelButton = new Choices('#choices-multiple-remove-button-actor', {
+            removeItemButton: true,
+            maxItemCount: 5,
+            searchResultLimit: 10,
+            renderChoiceLimit: 10
+        });
+    });
+
+
 </script>
 </html>

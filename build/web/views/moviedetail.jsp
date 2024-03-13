@@ -56,23 +56,13 @@
                                 <span></span>
                             </div>
                         </div>
-                        <a href="index-2.html"><img class="logo" src="images/logo1.png" alt="" width="119" height="58"></a>
+                        <a href="homepage"><img class="logo" src="images/logo1.png" alt="" width="119" height="58"></a>
                     </div>
                     <!-- Collect the nav links, forms, and other content for toggling -->
                     <div class="collapse navbar-collapse flex-parent" id="bs-example-navbar-collapse-1">
                         <ul class="nav navbar-nav flex-child-menu menu-left">
                             <li class="hidden">
                                 <a href="#page-top"></a>
-                            </li>
-                            <li class="dropdown first">
-                                <a class="btn btn-default dropdown-toggle lv1" data-toggle="dropdown">
-                                    Home <i class="fa fa-angle-down" aria-hidden="true"></i>
-                                </a>
-                                <ul class="dropdown-menu level1">
-                                    <li><a href="index-2.html">Home 01</a></li>
-                                    <li><a href="homev2.html">Home 02</a></li>
-                                    <li><a href="homev3.html">Home 03</a></li>
-                                </ul>
                             </li>
                             <li class="dropdown first">
                                 <a class="btn btn-default dropdown-toggle lv1" data-toggle="dropdown" data-hover="dropdown">
@@ -100,27 +90,6 @@
                                     <li><a href="celebritygrid02.html">celebrity grid 02 </a></li>
                                     <li><a href="celebritylist.html">celebrity list</a></li>
                                     <li class="it-last"><a href="celebritysingle.html">celebrity single</a></li>
-                                </ul>
-                            </li>
-                            <li class="dropdown first">
-                                <a class="btn btn-default dropdown-toggle lv1" data-toggle="dropdown" data-hover="dropdown">
-                                    news <i class="fa fa-angle-down" aria-hidden="true"></i>
-                                </a>
-                                <ul class="dropdown-menu level1">
-                                    <li><a href="bloglist.html">blog List</a></li>
-                                    <li><a href="bloggrid.html">blog Grid</a></li>
-                                    <li class="it-last"><a href="blogdetail.html">blog Detail</a></li>
-                                </ul>
-                            </li>
-                            <li class="dropdown first">
-                                <a class="btn btn-default dropdown-toggle lv1" data-toggle="dropdown" data-hover="dropdown">
-                                    community <i class="fa fa-angle-down" aria-hidden="true"></i>
-                                </a>
-                                <ul class="dropdown-menu level1">
-                                    <li><a href="userfavoritegrid.html">user favorite grid</a></li>
-                                    <li><a href="userfavoritelist.html">user favorite list</a></li>
-                                    <li><a href="userprofile.html">user profile</a></li>
-                                    <li class="it-last"><a href="userrate.html">user rate</a></li>
                                 </ul>
                             </li>
                         </ul>
@@ -173,15 +142,15 @@
                 <div class="row ipad-width2">
                     <div class="col-md-4 col-sm-12 col-xs-12">
                         <div class="movie-img sticky-sb">
-                            <img src="${moviee.img}" alt="">
+                            <img src="${urlImg}/${moviee.img}" alt="">
                             <div class="movie-btn">	
                                 <div class="btn-transform transform-vertical red">
                                     <div><a href="#" class="item item-1 redbtn"> <i class="ion-play"></i> Watch </a></div>
-                                    <div><a href="${moviee.src}" class="item item-2 redbtn fancybox-media hvr-grow"><i class="ion-play"></i></a></div>
+                                    <div><a href="https://www.youtube.com/embed/${moviee.src}" class="item item-2 redbtn fancybox-media hvr-grow"><i class="ion-play"></i></a></div>
                                 </div>
                                 <div class="btn-transform transform-vertical">
                                     <div><a href="#" class="item item-1 yellowbtn"> <i class="ion-play"></i> Watch Trailer</a></div>
-                                    <div><a href="${moviee.trail}" class="item item-2 yellowbtn fancybox-media hvr-grow"><i class="ion-play"></i></a></div>
+                                    <div><a href="https://www.youtube.com/embed/${moviee.trail}" class="item item-2 yellowbtn fancybox-media hvr-grow"><i class="ion-play"></i></a></div>
                                 </div>
                             </div>
                         </div>
@@ -244,7 +213,7 @@
                                                         <c:forEach items="${actors}" var="actor">
                                                             <div class="cast-it">
                                                                 <div class="cast-left">
-                                                                    <img src="images/uploads/cast1.jpg" alt="">
+                                                                    <img src="${urlImg2}/${actor.src}" alt="" width="40" height="40">
                                                                     <a href="#">${actor.name}</a>
                                                                 </div>
                                                             </div>

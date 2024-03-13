@@ -47,23 +47,13 @@
                                 <span></span>
                             </div>
                         </div>
-                        <a href="index-2.html"><img class="logo" src="images/logo1.png" alt="" width="119" height="58"></a>
+                        <a href="homepage"><img class="logo" src="images/logo1.png" alt="" width="119" height="58"></a>
                     </div>
                     <!-- Collect the nav links, forms, and other content for toggling -->
                     <div class="collapse navbar-collapse flex-parent" id="bs-example-navbar-collapse-1">
                         <ul class="nav navbar-nav flex-child-menu menu-left">
                             <li class="hidden">
                                 <a href="#page-top"></a>
-                            </li>
-                            <li class="dropdown first">
-                                <a class="btn btn-default dropdown-toggle lv1" data-toggle="dropdown">
-                                    Home <i class="fa fa-angle-down" aria-hidden="true"></i>
-                                </a>
-                                <ul class="dropdown-menu level1">
-                                    <li><a href="index-2.html">Home 01</a></li>
-                                    <li><a href="homev2.html">Home 02</a></li>
-                                    <li><a href="homev3.html">Home 03</a></li>
-                                </ul>
                             </li>
                             <li class="dropdown first">
                                 <a class="btn btn-default dropdown-toggle lv1" data-toggle="dropdown" data-hover="dropdown">
@@ -91,27 +81,6 @@
                                     <li><a href="celebritygrid02.html">celebrity grid 02 </a></li>
                                     <li><a href="celebritylist.html">celebrity list</a></li>
                                     <li class="it-last"><a href="celebritysingle.html">celebrity single</a></li>
-                                </ul>
-                            </li>
-                            <li class="dropdown first">
-                                <a class="btn btn-default dropdown-toggle lv1" data-toggle="dropdown" data-hover="dropdown">
-                                    news <i class="fa fa-angle-down" aria-hidden="true"></i>
-                                </a>
-                                <ul class="dropdown-menu level1">
-                                    <li><a href="bloglist.html">blog List</a></li>
-                                    <li><a href="bloggrid.html">blog Grid</a></li>
-                                    <li class="it-last"><a href="blogdetail.html">blog Detail</a></li>
-                                </ul>
-                            </li>
-                            <li class="dropdown first">
-                                <a class="btn btn-default dropdown-toggle lv1" data-toggle="dropdown" data-hover="dropdown">
-                                    community <i class="fa fa-angle-down" aria-hidden="true"></i>
-                                </a>
-                                <ul class="dropdown-menu level1">
-                                    <li><a href="userfavoritegrid.html">user favorite grid</a></li>
-                                    <li><a href="userfavoritelist.html">user favorite list</a></li>
-                                    <li><a href="userprofile.html">user profile</a></li>
-                                    <li class="it-last"><a href="userrate.html">user rate</a></li>
                                 </ul>
                             </li>
                         </ul>
@@ -161,7 +130,7 @@
                         <c:forEach items="${movies_new}" var="movie_new">
                             <div class="movie-item">
                                 <div class="mv-img">
-                                    <a href="#"><img src="${movie_new.img}" alt="" style="width: 285px; height: 437px"></a>
+                                    <a href="moviedetail?movie=${movie_new.id}"><img src="${urlImg}/${movie_new.img}" alt="" style="width: 285px; height: 437px"></a>
                                 </div>
                                 <div class="title-in">
                                     <div class="cate">
@@ -169,7 +138,7 @@
                                             <span class="blue"><a href="#">${genre_1.name}</a></span>
                                             </c:forEach>
                                     </div>
-                                    <h6><a href="#">${movie_new.title}</a></h6>
+                                    <h6><a href="moviedetail?movie=${movie_new.id}">${movie_new.title}</a></h6>
                                     <p><i class="ion-android-star"></i><span>${movie_new.rate}</span> /5</p>
                                 </div>
                             </div>
@@ -203,10 +172,10 @@
                                                             <div class="slide-it">
                                                                 <div class="movie-item">
                                                                     <div class="mv-img">
-                                                                        <img src="${movie_rate.img}" alt="" style="width: 163px; height: 250px">
+                                                                        <img src="${urlImg}/${movie_rate.img}" alt="" style="width: 163px; height: 250px">
                                                                     </div>
                                                                     <div class="hvr-inner">
-                                                                        <a  href="moviesingle.html"> Watch <i class="ion-android-arrow-dropright"></i> </a>
+                                                                        <a  href="moviedetail?movie=${movie_rate.id}"> Watch <i class="ion-android-arrow-dropright"></i> </a>
                                                                     </div>
                                                                     <div class="title-in">
                                                                         <h6><a href="#">${movie_rate.title}</a></h6>
@@ -229,10 +198,10 @@
                                                             <div class="slide-it">
                                                                 <div class="movie-item">
                                                                     <div class="mv-img">
-                                                                        <img src="${movie_cms.img}" alt="" style="width: 163px; height: 250px">
+                                                                        <img src="${urlImg}/${movie_cms.img}" alt="" style="width: 163px; height: 250px">
                                                                     </div>
                                                                     <div class="hvr-inner">
-                                                                        <a  href="moviesingle.html"> Watch <i class="ion-android-arrow-dropright"></i> </a>
+                                                                        <a  href="moviedetail?movie=${movie_cms.id}"> Watch <i class="ion-android-arrow-dropright"></i> </a>
                                                                     </div>
                                                                     <div class="title-in">
                                                                         <h6><a href="#">${movie_cms.title}</a></h6>
@@ -255,10 +224,10 @@
                                                             <div class="slide-it">
                                                                 <div class="movie-item">
                                                                     <div class="mv-img">
-                                                                        <img src="${movie_new.img}" alt="" style="width: 163px; height: 250px">
+                                                                        <img src="${urlImg}/${movie_new.img}" alt="" style="width: 163px; height: 250px">
                                                                     </div>
                                                                     <div class="hvr-inner">
-                                                                        <a  href="moviesingle.html"> Watch <i class="ion-android-arrow-dropright"></i> </a>
+                                                                        <a  href="moviedetail?movie=${movie_new.id}"> Watch <i class="ion-android-arrow-dropright"></i> </a>
                                                                     </div>
                                                                     <div class="title-in">
                                                                         <h6><a href="#">${movie_new.title}</a></h6>
@@ -292,11 +261,11 @@
                             <div class="slider-for-2 video-ft">
                                 <c:forEach items="${movies_cms}" var="movie_cms">
                                     <div>
-                                        <iframe class="item-video" src="#" data-src="${movie_cms.trail}"></iframe>
+                                        <iframe class="item-video" src="#" data-src="https://www.youtube.com/embed/${movie_cms.trail}"></iframe>
                                     </div>
                                 </c:forEach>
 
-                            </div>
+                            </div>  
                             <div class="slider-nav-2 thumb-ft">
                                 <c:forEach items="${movies_cms}" var="movie_cms">
                                     <div class="item">
@@ -321,9 +290,9 @@
                 <div class="flex-parent-ft">
                     <div class="flex-child-ft item1">
                         <a href="index-2.html"><img class="logo" src="images/logo1.png" alt=""></a>
-                        <p>5th Avenue st, manhattan<br>
-                            New York, NY 10001</p>
-                        <p>Call us: <a href="#">(+01) 202 342 6789</a></p>
+                        <p>Thon 3, Thach Hoa, Hanh Tinh HOLA<br>
+                            HA NOI, Viet Nam 11313</p>
+                        <p>Call us: <a href="#">(+84) 012 345 6789</a></p>
                     </div>
                     <div class="flex-child-ft item2">
                         <h4>Resources</h4>

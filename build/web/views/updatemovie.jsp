@@ -85,7 +85,7 @@
                     </div>
                     <div class="modal-footer">
                         <button onclick="location.href = 'managemovie'" class="btn btn-default" value="Cancel">Cancel</button>
-                        <input type="submit" class="btn btn-success" value="updatemovie">
+                        <input type="submit" class="btn btn-success" value="Update Movie">
                     </div>
                 </form>
             </div>

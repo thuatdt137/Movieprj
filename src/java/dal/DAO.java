@@ -264,7 +264,6 @@ public class DAO {
                 Genre h = new Genre();
                 h.setId(rs.getInt("GenreID"));
                 h.setName(rs.getString("GenreName"));
-                h.setColor(rs.getString("GenreColor"));
                 genres.add(h);
             }
 
@@ -285,7 +284,6 @@ public class DAO {
                 Genre h = new Genre();
                 h.setId(rs.getInt("GenreID"));
                 h.setName(rs.getString("GenreName"));
-                h.setColor(rs.getString("GenreColor"));
                 genres.add(h);
             }
 
@@ -465,6 +463,26 @@ public class DAO {
         return movies;
     }
 
+    public Genre getGenrebyId(int id) {
+        ArrayList<Genre> genres = getGenres();
+        for (Genre genre : genres) {
+            if (id == genre.getId()) {
+                return genre;
+            }
+        }
+        return null;
+    }
+
+    public Actor getActorbyId(int id) {
+        ArrayList<Actor> actors = getActors();
+        for (Actor actor : actors) {
+            if (id == actor.getId()) {
+                return actor;
+            }
+        }
+        return null;
+    }
+
     public User getUserbyId(int id) {
         ArrayList<User> users = getUsers();
         for (User user : users) {
@@ -493,6 +511,76 @@ public class DAO {
             }
         }
         return null;
+    }
+
+    public void updateActor(int actorID, String newActorName, String newActorImg, String newBirthDate, String newDescription, int newStatus) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        java.util.Date date = null;
+        System.out.println("Updating actor...");
+        String sql = """
+                 UPDATE Actor
+                 SET
+                     ActorName = ?,
+                     ActorImg = ?,
+                     BirthDate = ?,
+                     Description = ?,
+                     Status = ?
+                 WHERE
+                     ActorID = ?""";
+
+        try {
+            PreparedStatement ps = con.prepareStatement(sql);
+            date = formatter.parse(newBirthDate);
+            ps.setString(1, newActorName);
+            ps.setString(2, newActorImg);
+            ps.setDate(3, new java.sql.Date(date.getTime()));
+            ps.setString(4, newDescription);
+            ps.setInt(5, newStatus);
+            ps.setInt(6, actorID);
+
+            int rs = ps.executeUpdate();
+            if (rs != 0) {
+                System.out.println("Update success");
+            } else {
+                System.out.println("No actor found with ActorID: " + actorID);
+            }
+        } catch (SQLException | ParseException e) {
+            status = "Error at save Users " + e.getMessage();
+        }
+    }
+
+    public void updateActor(int actorID, String newActorName, String newBirthDate, String newDescription, int newStatus) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        java.util.Date date = null;
+        System.out.println("Updating actor...");
+        String sql = """
+                 UPDATE Actor
+                 SET
+                     ActorName = ?,
+                     BirthDate = ?,
+                     Description = ?,
+                     Status = ?
+                 WHERE
+                     ActorID = ?""";
+
+        try {
+            PreparedStatement ps = con.prepareStatement(sql);
+            date = formatter.parse(newBirthDate);
+            ps.setString(1, newActorName);
+            ps.setDate(2, new java.sql.Date(date.getTime()));
+            ps.setString(3, newDescription);
+            ps.setInt(4, newStatus);
+            ps.setInt(5, actorID);
+
+            int rs = ps.executeUpdate();
+            if (rs != 0) {
+                System.out.println("Update success");
+            } else {
+                System.out.println("No actor found with ActorID: " + actorID);
+            }
+        } catch (SQLException | ParseException e) {
+            status = "Error at save Users " + e.getMessage();
+        }
     }
 
     public void updateMoviewithoutImg(int movieID, String newTitle, String dateRelease, String newDescription, String newSourceLink, String newTrailerLink, int newStatus, int newStatusRelease) {
@@ -536,6 +624,7 @@ public class DAO {
             status = "Error at save Users " + e.getMessage();
         }
     }
+
     public void updateMovie(int movieID, String newTitle, String dateRelease, String newDescription, String newThumbSource, String newSourceLink, String newTrailerLink, int newStatus, int newStatusRelease) {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         java.util.Date date = null;
@@ -580,6 +669,26 @@ public class DAO {
         }
     }
 
+    public void updateGenre(int genreID, String genreName) {
+        System.out.println("Updating genre...");
+        String sql = "UPDATE Genre SET GenreName = ? WHERE GenreID = ?";
+
+        try {
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, genreName);
+            ps.setInt(2, genreID);
+
+            int rs = ps.executeUpdate();
+            if (rs != 0) {
+                System.out.println("Genre updated successfully");
+            } else {
+                System.out.println("No genre found with GenreID: " + genreID);
+            }
+        } catch (SQLException e) {
+            status = "Error at updateGenre " + e.getMessage();
+        }
+    }
+
     public void updateUser(String Name, String Username, String Password, String Email, int Role, int Status, int UserID) {
 
         System.out.println("Update data...");
@@ -602,6 +711,49 @@ public class DAO {
             }
         } catch (SQLException e) {
             status = "Error at save Users " + e.getMessage();
+        }
+    }
+
+    public void deleteGenre(int genreID) {
+        try {
+            // Xoá dữ liệu từ bảng MovieGenre trước
+            String deleteMovieGenreSQL = """
+                                         DELETE FROM MovieGenre WHERE GenreID = ?
+                                         DELETE FROM Genre WHERE GenreID = ?;""";
+            PreparedStatement ps = con.prepareStatement(deleteMovieGenreSQL);
+            ps.setInt(1, genreID);
+            ps.setInt(2, genreID);
+            ps.executeUpdate();
+            int rs = ps.executeUpdate();
+
+            if (rs != 0) {
+                System.out.println("Genre and related data deleted successfully");
+            } else {
+                System.out.println("No genre found with GenreID: " + genreID);
+            }
+        } catch (SQLException e) {
+            status = "Error at deleteGenre " + e.getMessage();
+        }
+    }
+
+    public void deleteActor(int actorID) {
+        try {
+            // Xoá dữ liệu từ bảng MovieActor trước
+            String deleteMovieActorSQL = """
+                                         DELETE FROM MovieActor WHERE ActorID = ?; 
+                                         DELETE FROM Actor WHERE ActorID = ?;""";
+            PreparedStatement ps = con.prepareStatement(deleteMovieActorSQL);
+            ps.setInt(1, actorID);
+            ps.setInt(2, actorID);
+            int rs = ps.executeUpdate();
+
+            if (rs != 0) {
+                System.out.println("Actor and related data deleted successfully");
+            } else {
+                System.out.println("No actor found with ActorID: " + actorID);
+            }
+        } catch (SQLException e) {
+            status = "Error at deleteActor " + e.getMessage();
         }
     }
 
@@ -690,6 +842,36 @@ public class DAO {
         }
     }
 
+    public void insertActor(String actorName, String actorImg, String birthDate, String description, int Status) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        java.util.Date date = null;
+
+        System.out.println("Inserting new actor...");
+        String sql = """
+                 INSERT INTO Actor (ActorName, ActorImg, BirthDate, Description, Status)
+                 VALUES (?, ?, ?, ?, ?)""";
+
+        try {
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            date = formatter.parse(birthDate);
+            ps.setString(1, actorName);
+            ps.setString(2, actorImg);
+            ps.setDate(3, new java.sql.Date(date.getTime()));
+            ps.setString(4, description);
+            ps.setInt(5, Status);
+
+            int rs = ps.executeUpdate();
+            if (rs != 0) {
+                System.out.println("Actor inserted successfully");
+            } else {
+                System.out.println("Failed to insert actor");
+            }
+        } catch (SQLException | ParseException e) {
+            status = "Error at insertActor " + e.getMessage();
+        }
+    }
+
     public boolean insertMovie(String title, String dateRelease, String descript, String img, String source, String trailer, int Status, int statusrelease, String[] genres, String[] actors) {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         java.util.Date date = null;
@@ -769,6 +951,21 @@ public class DAO {
         return check;
     }
 
+    public int getTotalGenre() {
+        String sql = "select count(*) from Genre";
+        try {
+            PreparedStatement ps = con.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                return rs.getInt(1);
+            }
+
+        } catch (SQLException e) {
+            status = "Error at save Users " + e.getMessage();
+        }
+        return 0;
+    }
+
     public int getTotalActor() {
         String sql = "select count(*) from Actor";
         try {
@@ -814,6 +1011,25 @@ public class DAO {
         return 0;
     }
 
+    public ArrayList<Genre> pagingGenre(int index, int numPerPage) {
+        ArrayList<Genre> list = new ArrayList<>();
+        String sql = "SELECT * FROM Genre ORDER BY GenreID OFFSET ? ROWS FETCH NEXT ? ROWS ONLY;";
+        try {
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            ps.setInt(1, (index - 1) * numPerPage);
+            ps.setInt(2, numPerPage);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                list.add(new Genre(rs.getInt("GenreID"), rs.getString("GenreName")));
+            }
+
+        } catch (SQLException e) {
+        }
+        return list;
+    }
+
     public ArrayList<User> pagingAccount(int index, int numPerPage) {
         ArrayList<User> list = new ArrayList<>();
         String sql = "SELECT * FROM Userdb ORDER BY UserID OFFSET ? ROWS FETCH NEXT ? ROWS ONLY;";
@@ -837,6 +1053,18 @@ public class DAO {
         } catch (SQLException e) {
         }
         return list;
+    }
+
+    public void deleteListActor(String list_string) {
+        list_string = list_string.trim();
+        String[] list = list_string.split(",");
+        for (String string : list) {
+            try {
+                int id = Integer.parseInt(string);
+                INSTANCE.deleteActor(id);
+            } catch (NumberFormatException e) {
+            }
+        }
     }
 
     public void deleteListMovie(String list_string) {

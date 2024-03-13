@@ -7,7 +7,7 @@
         <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <title>Manager Movie</title>
+        <title>Manager Actor</title>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
@@ -19,6 +19,19 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.css">
         <script src="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.js"></script>
 
+        <script>
+
+            function pageLink(index) {
+                var inputValue = document.getElementById("select-mange").value; // Lấy giá trị từ phần tử input
+
+                // Tạo URL với tham số index và value
+                var url = "manageactor?page=" + encodeURIComponent(inputValue) + "&index=" + index;
+
+                window.location(url);
+                // Gán URL cho href của liên kết
+                document.getElementById(index).href = url;
+            }
+        </script>
     </head>
 
     <body>
@@ -29,14 +42,14 @@
                         <div class="col-sm-6">
                             <h2><b>Manager Actor</b></h2>
                         </div>
-                        <div class="col-sm-6 user-table">
-                            <a href="#addUserModall" class="btn btn-success" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Add New User</span></a>
-                            <a href="#deleteListUser" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>Delete</span></a>						
+                        <div class="col-sm-6">
+                            <a href="#addActorModall" class="btn btn-success" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Add New Actor</span></a>
+                            <a href="#deleteListActor" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>Delete</span></a>						
                         </div>
                     </div>
                 </div>
                 <%-- table movie --%>
-                <div class="movie-table">
+                <div class="actor-table">
                     <table class="table table-striped table-hover">
                         <thead>
                             <tr>
@@ -68,9 +81,9 @@
                                     <td>${m.name}</td>
                                     <td>${m.birthday}</td>
                                     <td>${m.descript}</td>
-                                    <td><img src="${m.src}" alt="" style="width: 75px; height: 115px"></td>
-                                    <c:choose>
-                                        <c:when test="${m.status eq 1}">
+                                    <td><img src="${urlImg}/${m.src}" alt="" style="width: 75px; height: 115px"></td>
+                                        <c:choose>
+                                            <c:when test="${m.status eq 1}">
                                             <td><span class="status text-success">&bull;</span> Active</td>
                                         </c:when>
                                         <c:otherwise>
@@ -108,17 +121,17 @@
         </div>
     </div>
     <!-- Add Modal HTML -->
-    <div id="addUserModall" class="modal fade">
+    <div id="addActorModall" class="modal fade">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form action="insertmovie" method="post" enctype="multipart/form-data">
+                <form action="insertactor" method="post" enctype="multipart/form-data">
                     <div class="modal-header">			
-                        <h4 class="modal-title">Edit Employee</h4>
+                        <h4 class="modal-title">Add Actor</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
-                            <label>Title</label>
+                            <label>Name</label>
                             <input type="text" class="form-control" name="nameinsert" required>
                         </div>
                         <div class="form-group">
@@ -132,30 +145,6 @@
                         <div class="form-group">
                             <label>Image</label>
                             <input type="file" accept="image/*" class="form-control" name="imginsert" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Source</label>
-                            <input type="text" class="form-control" name="sourceinsert" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Trailer</label>
-                            <input type="text" class="form-control" name="trailerinsert" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Genre</label>
-                            <select name="genres" id="choices-multiple-remove-button" placeholder="Select upto 3 genres" multiple>
-                                <c:forEach items="${genres_list}" var="genre">
-                                    <option value="${genre.id}">${genre.name}</option>
-                                </c:forEach>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Genre</label>
-                            <select name="actors" id="choices-multiple-remove-button-actor" placeholder="Select upto 5 actor" multiple>
-                                <c:forEach items="${actors_list}" var="actor">
-                                    <option value="${actor.id}">${actor.name}</option>
-                                </c:forEach>
-                            </select>
                         </div>
                         <div class="form-group">
                             <label>Status</label>
@@ -174,12 +163,12 @@
         </div>
     </div>
     <!-- Delete Modal HTML -->
-    <div id="deleteListUser" class="modal fade">
+    <div id="deleteListActor" class="modal fade">
         <div class="modal-dialog">
             <div class="modal-content">
                 <form>
                     <div class="modal-header">						
-                        <h4 class="modal-title">Delete Employee</h4>
+                        <h4 class="modal-title">Delete Actor</h4>
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                     </div>
                     <div class="modal-body">					
@@ -452,7 +441,7 @@
             checkedValues.push(element.value);
         });
         var queryString = checkedValues.join(',');
-        window.location = "deletelistmovie?listmovie=" + encodeURIComponent(queryString);
+        window.location = "deletelistactor?listactor=" + encodeURIComponent(queryString);
 
     }
     $(document).ready(function () {

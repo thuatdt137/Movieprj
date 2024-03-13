@@ -60,6 +60,7 @@ public class Homepage extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        String urlImgPath = getServletContext().getInitParameter("UrlImage");
         ArrayList<Movie> topNewMovies = dao.topNewMovie();
         ArrayList<Movie> topRateMovies = dao.topRateMovie();
         ArrayList<Movie> comingSoonMovies = dao.comingSoonMovie();
@@ -68,7 +69,8 @@ public class Homepage extends HttpServlet {
         request.setAttribute("movies_rate", topRateMovies);
         request.setAttribute("movies_cms", comingSoonMovies);
         request.setAttribute("genres_list", genres);
-        
+        request.setAttribute("urlImg", urlImgPath);
+
         request.getRequestDispatcher("views/home.jsp").forward(request, response);
     }
 

@@ -59,6 +59,8 @@ public class InsertMovieServlet extends HttpServlet {
             throws ServletException, IOException {
         int status;
         PrintWriter out = response.getWriter();
+                String urlImgPath = getServletContext().getInitParameter("UrlImg");
+
 
         String[] genres = request.getParameterValues("genres");
         String[] actors = request.getParameterValues("actors");
@@ -73,7 +75,7 @@ public class InsertMovieServlet extends HttpServlet {
 
         Part filePart = request.getPart("imginsert");
 
-        String realPath = request.getServletContext().getRealPath("images/uploads/movies");
+        String realPath = request.getServletContext().getRealPath(urlImgPath);
 
         String fileName = Path.of(filePart.getSubmittedFileName()).getFileName().toString();
 

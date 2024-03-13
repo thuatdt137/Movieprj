@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="6.0" xmlns="https://jakarta.ee/xml/ns/jakartaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd">
-    
     <servlet>
         <servlet-name>RegisterServlet</servlet-name>
         <servlet-class>controllers.RegisterServlet</servlet-class>
@@ -60,6 +59,38 @@
     <servlet>
         <servlet-name>ManagerActorServlet</servlet-name>
         <servlet-class>controllers.ManagerActorServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ActorListServlet</servlet-name>
+        <servlet-class>controllers.ActorListServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UpdateActorServlet</servlet-name>
+        <servlet-class>controllers.UpdateActorServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>DeleteActorServlet</servlet-name>
+        <servlet-class>controllers.DeleteActorServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>InsertActorServlet</servlet-name>
+        <servlet-class>controllers.InsertActorServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>DeleteListActorServlet</servlet-name>
+        <servlet-class>controllers.DeleteListActorServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ManagerGenreServlet</servlet-name>
+        <servlet-class>controllers.ManagerGenreServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>DeleteGenreServlet</servlet-name>
+        <servlet-class>controllers.DeleteGenreServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UpdateGenreServlet</servlet-name>
+        <servlet-class>controllers.UpdateGenreServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>RegisterServlet</servlet-name>
@@ -129,5 +160,36 @@
         <param-name>UrlImage</param-name>
         <param-value>images/uploads/movies</param-value>
     </context-param>
-
+    <servlet-mapping>
+        <servlet-name>ActorListServlet</servlet-name>
+        <url-pattern>/actorlist</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UpdateActorServlet</servlet-name>
+        <url-pattern>/updateactor</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DeleteActorServlet</servlet-name>
+        <url-pattern>/deleteactor</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>InsertActorServlet</servlet-name>
+        <url-pattern>/insertactor</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DeleteListActorServlet</servlet-name>
+        <url-pattern>/deletelistactor</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ManagerGenreServlet</servlet-name>
+        <url-pattern>/managegenre</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DeleteGenreServlet</servlet-name>
+        <url-pattern>/deletegenre</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UpdateGenreServlet</servlet-name>
+        <url-pattern>/updategenre</url-pattern>
+    </servlet-mapping>
 </web-app>

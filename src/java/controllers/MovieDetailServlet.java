@@ -61,6 +61,8 @@ public class MovieDetailServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String movie_string = request.getParameter("movie") == null ? "" : request.getParameter("movie");
+        String urlImgPath = getServletContext().getInitParameter("UrlImage");
+        String urlImgPath2 = getServletContext().getInitParameter("Urlactors");
         if (movie_string == null) {
             request.getRequestDispatcher("views/homepage.jsp").forward(request, response);
         }
@@ -76,6 +78,8 @@ public class MovieDetailServlet extends HttpServlet {
         request.setAttribute("moviee", movie);
         request.setAttribute("actors", actors);
         request.setAttribute("genres", genres);
+        request.setAttribute("urlImg", urlImgPath);
+        request.setAttribute("urlImg2", urlImgPath2);
 
         request.getRequestDispatcher("views/moviedetail.jsp").forward(request, response);
     }

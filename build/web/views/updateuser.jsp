@@ -10,7 +10,7 @@
     <head>
         <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <title>Update User</title>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
@@ -24,7 +24,7 @@
             <div class="modal-content">
                 <form action="updateuser" method="post">
                     <div class="modal-header">						
-                        <h4 class="modal-title">Edit Employee</h4>
+                        <h4 class="modal-title">Edit User</h4>
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
@@ -82,7 +82,7 @@
                     </div>
                     <div class="modal-footer">
                         <button onclick="location.href = 'manageuser'" class="btn btn-default" value="Cancel">Cancel</button>
-                        <input type="submit" class="btn btn-success" value="updateuser">
+                        <input type="submit" class="btn btn-success" value="Update User">
                     </div>
                 </form>
             </div>

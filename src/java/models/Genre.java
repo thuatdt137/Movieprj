@@ -12,22 +12,13 @@ public class Genre {
 
     private int id;
     private String name;
-    private String color;
 
     public Genre() {
     }
 
-    public Genre(String name, String color) {
+    public Genre(int id, String name) {
+        this.id = id;
         this.name = name;
-        this.color = color;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public void setColor(String color) {
-        this.color = color;
     }
 
     public int getId() {
@@ -48,7 +39,7 @@ public class Genre {
 
     @Override
     public String toString() {
-        return "Genre{" + "id=" + id + ", name=" + name + ", color=" + color + '}';
+        return "Genre{" + "id=" + id + ", name=" + name + '}';
     }
 
 }
