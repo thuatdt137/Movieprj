@@ -81,10 +81,11 @@ public class LoginServlet extends HttpServlet {
         DAO dao = DAO.getINSTANCE();
         HttpSession session = request.getSession();
 
-        User user = dao.getUserbyEmailPassword(username, password);
+        User user = dao.getUserbyUsernamePassword(username, password);
         if (user != null) {
-            session.setAttribute("username", user.getEmail());
-            session.setAttribute("us", user.getRole());
+            session.setAttribute("us", user.getUsername());
+            session.setAttribute("role", user.getRole());
+            session.setAttribute("id", user.getId());
             response.sendRedirect("homepage");
         } else {
             request.setAttribute("msg", "Error");

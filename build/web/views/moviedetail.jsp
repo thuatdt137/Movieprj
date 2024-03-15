@@ -214,7 +214,7 @@
                                                             <div class="cast-it">
                                                                 <div class="cast-left">
                                                                     <img src="${urlImg2}/${actor.src}" alt="" width="40" height="40">
-                                                                    <a href="#">${actor.name}</a>
+                                                                    <a href="actordetail?actor=${actor.id}">${actor.name}</a>
                                                                 </div>
                                                             </div>
                                                         </c:forEach>
@@ -249,7 +249,7 @@
                                                         <h6>Stars: </h6>
                                                         <p>
                                                             <c:forEach items="${actors}" var="actor">
-                                                                <a href="#">${actor.name}</a>
+                                                                <a href="actordetail?actor=${actor.id}">${actor.name}</a>
                                                             </c:forEach>
                                                         </p>
                                                     </div>

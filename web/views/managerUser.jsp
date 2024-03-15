@@ -82,8 +82,8 @@
                                     <td>${user.id}</td>
                                     <td>${user.name}</td>
                                     <td>${user.username}</td>
-                                    <td>${user.email}</td>
                                     <td>${user.password}</td>
+                                    <td>${user.email}</td>
                                     <td>${user.role eq 0 ? 'Admin':'User'}</td>
                                     <c:choose>
                                         <c:when test="${user.status eq 1}">

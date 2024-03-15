@@ -58,7 +58,6 @@
                 font-size: 14px;
                 color: #222222;
                 font-weight: bold;
-                text-transform: capitalize;
                 margin-top: 10px;
                 height: 42px;
                 border: 1px solid #e1e1e1;
@@ -77,7 +76,7 @@
                             <div class="card">
                                 <div class="card-body p-5">
                                     <h2 class="text-uppercase text-center mb-5">Sign In</h2>
-                                    <form>
+                                    <form action="login" method="post">
                                         <div class="form-outline mb-4">
                                             <input type="text" id="form3Example1cg" class="form-control form-control-lg" name="username"/>
                                             <label class="form-label" for="form3Example1cg">Username</label>
@@ -89,7 +88,7 @@
                                         </div>
 
                                         <div class="d-flex justify-content-center">
-                                            <button type="button" class="btn btn-custom btn-block btn-lg">Sign In</button>
+                                            <button type="submit" class="btn btn-custom btn-block btn-lg">Sign In</button>
                                         </div>
                                         <p class="text-center text-muted mt-5 mb-0">Don't have an account? <a href="register" class="fw-bold text-body"><u>Register here</u></a></p>
                                     </form>

@@ -96,8 +96,18 @@
                                 </ul>
                             </li>                
                             <li><a href="#">Help</a></li>
-                            <li class="loginservlet"><a href="login">LOG In</a></li>
-                            <li class="btn registerservlet"><a href="register">sign up</a></li>
+                                <c:choose>
+                                    <c:when test="${empty sessionScope.us}">
+                                    <li class="loginservlet"><a href="login">LOG In</a></li>
+                                    <li class="btn registerservlet"><a href="register">sign up</a></li>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <c:if test="${sessionScope.role eq 0}">
+                                        <li class="loginservlet"><a href="login">LOG In</a></li>
+                                        </c:if>
+                                    <li class="btn"><a href="userprofile">${sessionScope.us}</a></li>
+                                    </c:otherwise>
+                                </c:choose>
                         </ul>
                     </div>
                     <!-- /.navbar-collapse -->

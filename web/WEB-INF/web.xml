@@ -18,7 +18,7 @@
     </servlet>
     <servlet>
         <servlet-name>ManageUserServlet</servlet-name>
-        <servlet-class>controllers.ManageUserServlet</servlet-class>
+        <servlet-class>controllers.ManagerUserServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>UpdateUserServlet</servlet-name>
@@ -91,6 +91,18 @@
     <servlet>
         <servlet-name>UpdateGenreServlet</servlet-name>
         <servlet-class>controllers.UpdateGenreServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ActorDetailServlet</servlet-name>
+        <servlet-class>controllers.ActorDetailServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UserProfileServlet</servlet-name>
+        <servlet-class>controllers.UserProfileServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>LogoutServlet</servlet-name>
+        <servlet-class>controllers.LogoutServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>RegisterServlet</servlet-name>
@@ -191,5 +203,17 @@
     <servlet-mapping>
         <servlet-name>UpdateGenreServlet</servlet-name>
         <url-pattern>/updategenre</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ActorDetailServlet</servlet-name>
+        <url-pattern>/actordetail</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UserProfileServlet</servlet-name>
+        <url-pattern>/userprofile</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>LogoutServlet</servlet-name>
+        <url-pattern>/logout</url-pattern>
     </servlet-mapping>
 </web-app>

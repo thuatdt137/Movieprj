@@ -16,6 +16,7 @@ public class Movie {
     private int id;
     private String title;
     private ArrayList<Genre> genre;
+    private ArrayList<Actor> actor;
     private Date date;
     private String descript;
     private String img;
@@ -29,10 +30,11 @@ public class Movie {
     public Movie() {
     }
 
-    public Movie(int id, String title, ArrayList<Genre> genre, Date date, String descript, String img, String src, String trail, int likecount, double rate, int status, int statusrelease) {
+    public Movie(int id, String title, ArrayList<Genre> genre, ArrayList<Actor> actor, Date date, String descript, String img, String src, String trail, int likecount, double rate, int status, int statusrelease) {
         this.id = id;
         this.title = title;
         this.genre = genre;
+        this.actor = actor;
         this.date = date;
         this.descript = descript;
         this.img = img;
@@ -55,6 +57,14 @@ public class Movie {
         this.rate = rate;
         this.status = status;
         this.statusrelease = statusrelease;
+    }
+
+    public ArrayList<Actor> getActor() {
+        return actor;
+    }
+
+    public void setActor(ArrayList<Actor> actor) {
+        this.actor = actor;
     }
 
     public ArrayList<Genre> getGenre() {

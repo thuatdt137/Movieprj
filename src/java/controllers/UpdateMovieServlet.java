@@ -78,6 +78,8 @@ public class UpdateMovieServlet extends HttpServlet {
         String trailer = request.getParameter("trailer");
         String status_string = request.getParameter("status");
         String statusRelease_string = request.getParameter("statusrelease");
+        String[] genres = request.getParameterValues("genres");
+        String[] actors = request.getParameterValues("actors");
         Part filePart = request.getPart("image");
         try {
             id = Integer.parseInt(id_string);

@@ -42,8 +42,8 @@ public class DAO {
                 h.setId(rs.getInt("UserID"));
                 h.setName(rs.getString("Name"));
                 h.setUsername(rs.getString("Username"));
-                h.setEmail(rs.getString("Password"));
-                h.setPassword(rs.getString("Email"));
+                h.setPassword(rs.getString("Password"));
+                h.setEmail(rs.getString("Email"));
                 h.setRole(rs.getInt("Role"));
                 h.setStatus(rs.getInt("Status"));
                 users.add(h);
@@ -122,6 +122,47 @@ public class DAO {
         return foundGenre;
     }
 
+    public void setActor(ArrayList<Movie> movies) {
+        ArrayList<Actor> actors = INSTANCE.getActors(); // Lấy danh sách tất cả các diễn viên
+        for (int i = 0; i < movies.size(); i++) {
+            ArrayList<Actor> actors_set = new ArrayList<>();
+            movies.get(i).setActor(actors_set);
+        }
+        try {
+            System.out.println("Loading data...");
+            String sql = """
+                     SELECT
+                         Movie.MovieID,
+                         Actor.ActorID
+                     FROM
+                         Movie
+                     JOIN
+                         MovieActor ON Movie.MovieID = MovieActor.MovieID
+                     JOIN
+                         Actor ON MovieActor.ActorID = Actor.ActorID;""";
+            PreparedStatement ps = con.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                int movie_id = rs.getInt("MovieID");
+                int actor_id = rs.getInt("ActorID");
+
+                for (Movie movie : movies) {
+                    if (movie.getId() == movie_id) {
+                        for (Actor actor : actors) {
+                            if (actor.getId() == actor_id) {
+                                movie.getActor().add(actor); // Thêm diễn viên vào danh sách diễn viên của bộ phim
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+        } catch (SQLException e) {
+            status = "Error at read Users " + e.getMessage();
+        }
+    }
+
     public void setGenre(ArrayList<Movie> movies) {
         ArrayList<Genre> genres = INSTANCE.getGenres();
         for (int i = 0; i < movies.size(); i++) {
@@ -134,8 +175,7 @@ public class DAO {
                          SELECT
                              Movie.MovieID,
                              Genre.GenreID,
-                             Genre.GenreName,
-                             Genre.GenreColor
+                             Genre.GenreName
                          FROM
                              Movie
                          JOIN
@@ -165,6 +205,51 @@ public class DAO {
         } catch (SQLException e) {
             status = "Error at read Users " + e.getMessage();
         }
+    }
+
+    public ArrayList<Movie> getMoviesByActor(int actorID) {
+        ArrayList<Movie> movies = new ArrayList<>();
+        try {
+            System.out.println("Loading data...");
+            String sql = """
+                     SELECT
+                         Movie.*,
+                         ISNULL(COUNT(UserFavoriteMovies.MovieID), 0) AS likeCount
+                     FROM
+                         Movie
+                     LEFT JOIN
+                         UserFavoriteMovies ON Movie.MovieID = UserFavoriteMovies.MovieID AND UserFavoriteMovies.isLove = 1
+                     JOIN
+                         MovieActor ON Movie.MovieID = MovieActor.MovieID
+                     WHERE
+                         MovieActor.ActorID = ?
+                     GROUP BY
+                         Movie.MovieID, Movie.Title, Movie.ReleaseDate, Movie.Description, Movie.ThumbSource, Movie.SourceLink, Movie.TrailerLink, Movie.Status, Movie.StatusRelease;""";
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setInt(1, actorID);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Movie h = new Movie();
+                h.setId(rs.getInt("MovieID"));
+                h.setTitle(rs.getString("Title"));
+                h.setDate(rs.getDate("ReleaseDate"));
+                h.setDescript(rs.getString("Description"));
+                h.setImg(rs.getString("ThumbSource"));
+                h.setSrc(rs.getString("SourceLink"));
+                h.setTrail(rs.getString("TrailerLink"));
+                h.setStatus(rs.getInt("Status"));
+                h.setStatusrelease(rs.getInt("StatusRelease"));
+                h.setLikecount(rs.getInt("likeCount"));
+                movies.add(h);
+            }
+
+        } catch (SQLException e) {
+            status = "Error at read Users " + e.getMessage();
+        }
+        setRating(movies);
+        setGenre(movies);
+        setActor(movies);
+        return movies;
     }
 
     public ArrayList<Actor> getActorsbyMovie(int movie_id) {
@@ -338,6 +423,7 @@ public class DAO {
         }
         setRating(movies);
         setGenre(movies);
+        setActor(movies);
         return movies;
     }
 
@@ -421,7 +507,50 @@ public class DAO {
         }
         setRating(movies);
         setGenre(movies);
+        setActor(movies);
         return movies;
+    }
+
+    public ArrayList<Movie> getFavoriteMoviesByUser(int userID, int index, int numPerPage) {
+        ArrayList<Movie> favoriteMovies = new ArrayList<>();
+        try {
+            System.out.println("Loading data...");
+            String sql = """
+                    SELECT
+                        Movie.*,
+                        COUNT(UserFavoriteMovies.MovieID) AS likeCount
+                    FROM
+                        Movie
+                    JOIN
+                        UserFavoriteMovies ON Movie.MovieID = UserFavoriteMovies.MovieID
+                    WHERE
+                        UserFavoriteMovies.UserID = ? AND UserFavoriteMovies.isLove = 1
+                    GROUP BY
+                        Movie.MovieID, Movie.Title, Movie.ReleaseDate, Movie.Description, Movie.ThumbSource, Movie.SourceLink, Movie.TrailerLink, Movie.Status, Movie.StatusRelease
+                    ORDER BY
+                        Movie.MovieID
+                    OFFSET ? ROWS FETCH NEXT ? ROWS ONLY;""";
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setInt(1, userID);
+            ps.setInt(2, (index - 1) * numPerPage);
+            ps.setInt(3, numPerPage);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Movie movie = new Movie();
+                movie.setId(rs.getInt("MovieID"));
+                movie.setTitle(rs.getString("Title"));
+                movie.setDate(rs.getDate("ReleaseDate"));
+                movie.setDescript(rs.getString("Description"));
+                movie.setImg(rs.getString("ThumbSource"));
+                favoriteMovies.add(movie);
+            }
+        } catch (SQLException e) {
+            status = "Error at read favorite movies " + e.getMessage();
+        }
+        setRating(favoriteMovies);
+        setGenre(favoriteMovies);
+        setActor(favoriteMovies);
+        return favoriteMovies;
     }
 
     public ArrayList<Movie> getMovies() {
@@ -460,6 +589,7 @@ public class DAO {
         }
         setRating(movies);
         setGenre(movies);
+        setActor(movies);
         return movies;
     }
 
@@ -493,10 +623,10 @@ public class DAO {
         return null;
     }
 
-    public User getUserbyEmailPassword(String email, String password) {
+    public User getUserbyUsernamePassword(String username, String password) {
         ArrayList<User> users = getUsers();
         for (User user : users) {
-            if (email.equals(user.getEmail()) && password.equals(user.getPassword())) {
+            if (username.equals(user.getUsername()) && password.equals(user.getPassword())) {
                 return user;
             }
         }
@@ -625,6 +755,32 @@ public class DAO {
         }
     }
 
+    public boolean updateMovieActor(int id_movie, int id_actor) {
+        boolean check = true;
+        System.out.println("Updating genre...");
+        String sql = """
+                     UPDATE MovieActor
+                     SET ActorID = ?
+                     WHERE MovieID = ?;""";
+
+        try {
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setInt(1, id_actor);
+            ps.setInt(2, id_movie);
+
+            int rs = ps.executeUpdate();
+            if (rs != 0) {
+                System.out.println("Genre updated successfully");
+            } else {
+                System.out.println("false to update");
+                check = false;
+            }
+        } catch (SQLException e) {
+            status = "Error at updateGenre " + e.getMessage();
+        }
+        return check;
+    }
+
     public void updateMovie(int movieID, String newTitle, String dateRelease, String newDescription, String newThumbSource, String newSourceLink, String newTrailerLink, int newStatus, int newStatusRelease) {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         java.util.Date date = null;
@@ -686,6 +842,29 @@ public class DAO {
             }
         } catch (SQLException e) {
             status = "Error at updateGenre " + e.getMessage();
+        }
+    }
+
+    public void updateUser(String Name, String Username, String Password, String Email, int UserID) {
+
+        System.out.println("Update data...");
+        String sql = "UPDATE Userdb SET Name = ?, Username = ?, Password = ?, Email = ? WHERE UserID = ?;";
+
+        try {
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            // Set the new values and user ID
+            ps.setString(1, Name);
+            ps.setString(2, Username);
+            ps.setString(3, Password);
+            ps.setString(4, Email);
+            ps.setInt(5, UserID);
+            int rs = ps.executeUpdate();
+            if (rs != 0) {
+                System.out.println("update success");
+            }
+        } catch (SQLException e) {
+            status = "Error at save Users " + e.getMessage();
         }
     }
 
@@ -951,6 +1130,25 @@ public class DAO {
         return check;
     }
 
+    public int getTotalMovieUser() {
+        String sql = """
+                     SELECT COUNT(*)
+                     FROM Movie
+                     JOIN UserFavoriteMovies ON Movie.MovieID = UserFavoriteMovies.MovieID
+                     WHERE UserFavoriteMovies.UserID = 1;""";
+        try {
+            PreparedStatement ps = con.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                return rs.getInt(1);
+            }
+
+        } catch (SQLException e) {
+            status = "Error at save Users " + e.getMessage();
+        }
+        return 0;
+    }
+
     public int getTotalGenre() {
         String sql = "select count(*) from Genre";
         try {
@@ -1044,8 +1242,8 @@ public class DAO {
                 list.add(new User(rs.getInt(1),
                         rs.getString(2),
                         rs.getString(3),
-                        rs.getString(4),
                         rs.getString(5),
+                        rs.getString(4),
                         rs.getInt(6),
                         rs.getInt(7)));
             }
@@ -1092,7 +1290,6 @@ public class DAO {
     }
 
     public static void main(String[] args) {
-        INSTANCE.deleteUser(5);
-
+        System.out.println(DAO.INSTANCE.getUsers().get(1).getEmail());
     }
 }
