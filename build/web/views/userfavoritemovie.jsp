@@ -27,9 +27,38 @@
         <!-- CSS files -->
         <link rel="stylesheet" href="css/plugins.css">
         <link rel="stylesheet" href="css/style.css">
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                document.getElementById('searchForm').addEventListener('submit', function (e) {
+                    e.preventDefault(); // Ngăn chặn hành động mặc định của form
+                    var form = e.target;
+                    var selectValue = form.querySelector('#searchType').value; // Lấy giá trị của select
+                    var inputText = form.querySelector('input[type="text"]').value;
 
+                    // Thay đổi action của form dựa trên giá trị của select
+                    if (selectValue === 'movie') {
+                        form.action = 'movielist';
+                    } else if (selectValue === 'actor') {
+                        form.action = 'actorlist';
+                    }
+
+                    // Gửi form đi với action đã thay đổi
+                    form.submit();
+                });
+            });
+        </script>
     </head>
     <body>
+
+        <!--preloading-->
+        <div id="preloader">
+            <img class="logo" src="images/logo1.png" alt="" width="119" height="58">
+            <div id="status">
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+        <!--end of preloading-->
         <!-- BEGIN | Header -->
         <header class="ht-header">
             <div class="container">
@@ -44,23 +73,13 @@
                                 <span></span>
                             </div>
                         </div>
-                        <a href="index-2.html"><img class="logo" src="images/logo1.png" alt="" width="119" height="58"></a>
+                        <a href="homepage"><img class="logo" src="images/logo1.png" alt="" width="119" height="58"></a>
                     </div>
                     <!-- Collect the nav links, forms, and other content for toggling -->
                     <div class="collapse navbar-collapse flex-parent" id="bs-example-navbar-collapse-1">
                         <ul class="nav navbar-nav flex-child-menu menu-left">
                             <li class="hidden">
                                 <a href="#page-top"></a>
-                            </li>
-                            <li class="dropdown first">
-                                <a class="btn btn-default dropdown-toggle lv1" data-toggle="dropdown">
-                                    Home <i class="fa fa-angle-down" aria-hidden="true"></i>
-                                </a>
-                                <ul class="dropdown-menu level1">
-                                    <li><a href="index-2.html">Home 01</a></li>
-                                    <li><a href="homev2.html">Home 02</a></li>
-                                    <li><a href="homev3.html">Home 03</a></li>
-                                </ul>
                             </li>
                             <li class="dropdown first">
                                 <a class="btn btn-default dropdown-toggle lv1" data-toggle="dropdown" data-hover="dropdown">
@@ -74,9 +93,7 @@
                                             <li><a href="moviegridfw.html">movie grid full width</a></li>
                                         </ul>
                                     </li>			
-                                    <li><a href="movielist.html">Movie list</a></li>
-                                    <li><a href="moviesingle.html">Movie single</a></li>
-                                    <li class="it-last"><a href="seriessingle.html">Series single</a></li>
+                                    <li><a href="movielist">Movie list</a></li>
                                 </ul>
                             </li>
                             <li class="dropdown first">
@@ -84,31 +101,8 @@
                                     celebrities <i class="fa fa-angle-down" aria-hidden="true"></i>
                                 </a>
                                 <ul class="dropdown-menu level1">
-                                    <li><a href="celebritygrid01.html">celebrity grid 01</a></li>
-                                    <li><a href="celebritygrid02.html">celebrity grid 02 </a></li>
-                                    <li><a href="celebritylist.html">celebrity list</a></li>
+                                    <li><a href="actorlist">celebrity list</a></li>
                                     <li class="it-last"><a href="celebritysingle.html">celebrity single</a></li>
-                                </ul>
-                            </li>
-                            <li class="dropdown first">
-                                <a class="btn btn-default dropdown-toggle lv1" data-toggle="dropdown" data-hover="dropdown">
-                                    news <i class="fa fa-angle-down" aria-hidden="true"></i>
-                                </a>
-                                <ul class="dropdown-menu level1">
-                                    <li><a href="bloglist.html">blog List</a></li>
-                                    <li><a href="bloggrid.html">blog Grid</a></li>
-                                    <li class="it-last"><a href="blogdetail.html">blog Detail</a></li>
-                                </ul>
-                            </li>
-                            <li class="dropdown first">
-                                <a class="btn btn-default dropdown-toggle lv1" data-toggle="dropdown" data-hover="dropdown">
-                                    community <i class="fa fa-angle-down" aria-hidden="true"></i>
-                                </a>
-                                <ul class="dropdown-menu level1">
-                                    <li><a href="userfavoritegrid.html">user favorite grid</a></li>
-                                    <li><a href="userfavoritelist.html">user favorite list</a></li>
-                                    <li><a href="userprofile.html">user profile</a></li>
-                                    <li class="it-last"><a href="userrate.html">user rate</a></li>
                                 </ul>
                             </li>
                         </ul>
@@ -124,21 +118,33 @@
                                 </ul>
                             </li>                
                             <li><a href="#">Help</a></li>
-                            <li class="loginLink"><a href="#">LOG In</a></li>
-                            <li class="btn signupLink"><a href="#">sign up</a></li>
+                                <c:choose>
+                                    <c:when test="${empty sessionScope.us}">
+                                    <li class="loginservlet"><a href="login">LOG In</a></li>
+                                    <li class="btn registerservlet"><a href="register">sign up</a></li>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <c:if test="${sessionScope.role eq 0}">
+                                        <li><a href="manageuser">Manager</a></li>
+                                        </c:if>
+                                    <li class="logoutservlet"><a href="logout">Log OUT</a></li>
+                                    <li class="btn"><a href="userprofile">${sessionScope.us}</a></li>
+                                    </c:otherwise>
+                                </c:choose>
                         </ul>
                     </div>
                     <!-- /.navbar-collapse -->
                 </nav>
 
                 <!-- top search form -->
-                <div class="top-search">
-                    <select>
-                        <option value="united">TV show</option>
-                        <option value="saab">Others</option>
+                <form class="top-search" action="" method="get" id="searchForm">
+                    <select id="searchType">
+                        <option value="movie">Movie</option>
+                        <option value="actor">Actor</option>
                     </select>
-                    <input type="text" placeholder="Search for a movie, TV Show or celebrity that you are looking for">
-                </div>
+                    <input name="title" type="text" placeholder="Search for a movie, actor that you are looking for">
+                    <button type="submit" style="display:none"></button>
+                </form>
             </div>
         </header>
         <!-- END | Header -->
@@ -213,12 +219,12 @@
                                     <c:choose>
                                         <c:when test="${currPage eq i}">
                                             <a id="${i}" href="userprofile?user=2&action=favoritemovie&index=${i}" class="page-link active">${i}</a>
-                                            </c:when>
-                                            <c:otherwise>
+                                        </c:when>
+                                        <c:otherwise>
                                             <a id="${i}" href="userprofile?user=2&action=favoritemovie&index=${i}" class="page-link">${i}</a>
-                                            </c:otherwise>
-                                        </c:choose>
-                                    </c:forEach>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </c:forEach>
                             </div>
                         </div>
                     </div>

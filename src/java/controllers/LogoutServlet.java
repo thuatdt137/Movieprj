@@ -6,7 +6,6 @@
 package controllers;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,11 +23,12 @@ public class LogoutServlet extends HttpServlet {
     throws ServletException, IOException {
         HttpSession session = request.getSession(false);
         session.removeAttribute("us");
+        session.removeAttribute("ps");
         session.removeAttribute("role");
         session.removeAttribute("id");
         session.invalidate();
 
-        response.sendRedirect("list");
+        response.sendRedirect("homepage");
     } 
 
     /** 

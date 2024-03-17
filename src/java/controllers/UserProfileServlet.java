@@ -77,23 +77,32 @@ public class UserProfileServlet extends HttpServlet {
                     request.getRequestDispatcher("views/userprofile.jsp").forward(request, response);
             }
         }
-        request.getRequestDispatcher("views/userprofile.jsp").forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        int id;
+        HttpSession session = request.getSession(false);
+        Object user_string = session.getAttribute("id");
+        int id = -1;
+        try {
+            id = (Integer) user_string;
 
-        String id_string = request.getParameter("id");
+        } catch (NumberFormatException e) {
+        }
         String name = request.getParameter("name");
         String username = request.getParameter("username");
-        String password = request.getParameter("newpassword");
+        String old_password = request.getParameter("oldpassword");
+        String new_password = request.getParameter("newpassword") == null ? old_password : request.getParameter("newpassword");
         String email = request.getParameter("email");
         try {
-            id = Integer.parseInt(id_string);
-
-            dao.updateUser(name, username, password, email, id);
+            if (old_password.equals(session.getAttribute("ps")) && dao.checkUsername(username)) {
+                session.removeAttribute("us");
+                session.removeAttribute("ps");
+                session.setAttribute("us", username);
+                session.setAttribute("ps", new_password);
+                dao.updateUser(name, username, new_password, email, id);
+            }
             doGet(request, response);
         } catch (NumberFormatException e) {
         }

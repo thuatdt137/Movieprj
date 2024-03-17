@@ -57,7 +57,7 @@ public class InsertUserServlet extends HttpServlet {
             role = Integer.parseInt(role_string);
             status = Integer.parseInt(status_string);
 
-            dao.insert(name, username, password, email, role, status);
+            dao.insertUser(name, username, password, email, role, status);
             response.sendRedirect("manageuser");
         } catch (NumberFormatException e) {
         }

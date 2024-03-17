@@ -28,9 +28,52 @@
         <!-- CSS files -->
         <link rel="stylesheet" href="css/plugins.css">
         <link rel="stylesheet" href="css/style.css">
+        <style>
+            .hehe {
+                font-family: 'Dosis', sans-serif;
+                font-size: 14px;
+                color: #ffffff;
+                font-weight: bold;
+                text-transform: uppercase;
+                background: #dd003f;
+                width: 100%;
+                height: 40px;
+                border-radius: 50px !important;
+                border: none;
+            }
+        </style>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                document.getElementById('searchForm').addEventListener('submit', function (e) {
+                    e.preventDefault(); // Ngăn chặn hành động mặc định của form
+                    var form = e.target;
+                    var selectValue = form.querySelector('#searchType').value; // Lấy giá trị của select
+                    var inputText = form.querySelector('input[type="text"]').value;
 
+                    // Thay đổi action của form dựa trên giá trị của select
+                    if (selectValue === 'movie') {
+                        form.action = 'movielist';
+                    } else if (selectValue === 'actor') {
+                        form.action = 'actorlist';
+                    }
+
+                    // Gửi form đi với action đã thay đổi
+                    form.submit();
+                });
+            });
+        </script>
     </head>
     <body>
+
+        <!--preloading-->
+        <div id="preloader">
+            <img class="logo" src="images/logo1.png" alt="" width="119" height="58">
+            <div id="status">
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+        <!--end of preloading-->
         <!-- BEGIN | Header -->
         <header class="ht-header">
             <div class="container">
@@ -65,9 +108,7 @@
                                             <li><a href="moviegridfw.html">movie grid full width</a></li>
                                         </ul>
                                     </li>			
-                                    <li><a href="movielist.html">Movie list</a></li>
-                                    <li><a href="moviesingle.html">Movie single</a></li>
-                                    <li class="it-last"><a href="seriessingle.html">Series single</a></li>
+                                    <li><a href="movielist">Movie list</a></li>
                                 </ul>
                             </li>
                             <li class="dropdown first">
@@ -75,9 +116,7 @@
                                     celebrities <i class="fa fa-angle-down" aria-hidden="true"></i>
                                 </a>
                                 <ul class="dropdown-menu level1">
-                                    <li><a href="celebritygrid01.html">celebrity grid 01</a></li>
-                                    <li><a href="celebritygrid02.html">celebrity grid 02 </a></li>
-                                    <li><a href="celebritylist.html">celebrity list</a></li>
+                                    <li><a href="actorlist">celebrity list</a></li>
                                     <li class="it-last"><a href="celebritysingle.html">celebrity single</a></li>
                                 </ul>
                             </li>
@@ -94,21 +133,33 @@
                                 </ul>
                             </li>                
                             <li><a href="#">Help</a></li>
-                            <li class="loginservlet"><a href="login">LOG In</a></li>
-                            <li class="btn registerservlet"><a href="register">sign up</a></li>
+                                <c:choose>
+                                    <c:when test="${empty sessionScope.us}">
+                                    <li class="loginservlet"><a href="login">LOG In</a></li>
+                                    <li class="btn registerservlet"><a href="register">sign up</a></li>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <c:if test="${sessionScope.role eq 0}">
+                                        <li><a href="manageuser">Manager</a></li>
+                                        </c:if>
+                                    <li class="logoutservlet"><a href="logout">Log OUT</a></li>
+                                    <li class="btn"><a href="userprofile">${sessionScope.us}</a></li>
+                                    </c:otherwise>
+                                </c:choose>
                         </ul>
                     </div>
                     <!-- /.navbar-collapse -->
                 </nav>
 
                 <!-- top search form -->
-                <div class="top-search">
-                    <select>
-                        <option value="united">TV show</option>
-                        <option value="saab">Others</option>
+                <form class="top-search" action="" method="get" id="searchForm">
+                    <select id="searchType">
+                        <option value="movie">Movie</option>
+                        <option value="actor">Actor</option>
                     </select>
-                    <input type="text" placeholder="Search for a movie, TV Show or celebrity that you are looking for">
-                </div>
+                    <input name="title" type="text" placeholder="Search for a movie, actor that you are looking for">
+                    <button type="submit" style="display:none"></button>
+                </form>
             </div>
         </header>
         <!-- END | Header -->
@@ -120,7 +171,7 @@
                         <div class="hero-ct">
                             <h1>${user.name}’s profile</h1>
                             <ul class="breadcumb">
-                                <li class="active"><a href="#">Home</a></li>
+                                <li class="active"><a href="homepage">Home</a></li>
                                 <li> <span class="ion-ios-arrow-right"></span>Profile</li>
                             </ul>
                         </div>
@@ -149,7 +200,7 @@
                                 <p>Others</p>
                                 <ul>
                                     <li><a href="#">Change password</a></li>
-                                    <li><a href="#">Log out</a></li>
+                                    <li><a href="logout">Log out</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -161,27 +212,23 @@
                                 <div class="row">
                                     <div class="col-md-6 form-it">
                                         <label>Username</label>
-                                        <input name="username" type="text" placeholder="${user.username}">
+                                        <input name="username" type="text" value="${user.username}" required>
                                     </div>
                                     <div class="col-md-6 form-it">
                                         <label>Email Address</label>
-                                        <input name="email" type="text" placeholder="${user.email}">
+                                        <input name="email" type="text" value="${user.email}" required>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6 form-it">
                                         <label>Name</label>
-                                        <input name="name" type="text" placeholder="${user.name}">
-                                    </div>
-                                    <div class="col-md-6 form-it">
-                                        <label>ID</label>
-                                        <input type="text" placeholder="${user.id}">
+                                        <input name="name" type="text" value="${user.name}" required>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6 form-it">
                                         <label>Old Password</label>
-                                        <input class="old_password" name="oldpassword" type="text" placeholder="***********">
+                                        <input class="old_password" name="oldpassword" type="password" value="${user.password}">
                                     </div>
                                 </div>
                                 <div class="row">
@@ -198,7 +245,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-md-2" style="">
-                                        <button class="button submit hehe" type="submit">Change</button>
+                                        <button class="hehe button" type="submit">Change</button>
                                     </div>
                                 </div>
                             </form>
@@ -272,30 +319,17 @@
         <script src="js/custom.js"></script>
     </body>
 
-    <style>
-        .hehe {
-            font-family: 'Dosis', sans-serif;
-            font-size: 14px;
-            color: #ffffff;
-            font-weight: bold;
-            text-transform: uppercase;
-            background: #dd003f;
-            width: 100%;
-            height: 40px;
-            border-radius: 50px !important;
-            border: none;
-        }
-    </style>
     <script>
-        document.querySelector('.button').onclick = function () {
-            var password = document.querySelector('.new_password').value,
-                    confirmPassword = document.querySelector('.confirm_password').value;
-            if (password === "") {
-                alert("Field cannot be empty.");
-            } else if (password !== confirmPassword) {
-                alert("Password didn't match try again.");
-                return false;
-            }
-        };
+            document.querySelector('.button').onclick = function () {
+                var password = document.querySelector('.new_password').value,
+                        confirmPassword = document.querySelector('.confirm_password').value;
+                if (password === "") {
+                    alert("Field cannot be empty.");
+                } else if (password !== confirmPassword) {
+                    alert("Password didn't match try again.");
+                    return false;
+                }
+            };
     </script>
+
 </html>

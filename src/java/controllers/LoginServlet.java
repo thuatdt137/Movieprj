@@ -9,6 +9,7 @@ import models.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -84,13 +85,31 @@ public class LoginServlet extends HttpServlet {
         User user = dao.getUserbyUsernamePassword(username, password);
         if (user != null) {
             session.setAttribute("us", user.getUsername());
+            session.setAttribute("ps", user.getPassword());
             session.setAttribute("role", user.getRole());
             session.setAttribute("id", user.getId());
-            response.sendRedirect("homepage");
         } else {
             request.setAttribute("msg", "Error");
             doGet(request, response);
 
+        }
+
+        String returnUrl = null;
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("returnUrl")) {
+                    returnUrl = cookie.getValue();
+                    break;
+                }
+            }
+        }
+
+        if (returnUrl != null) {
+            response.sendRedirect(returnUrl);
+        } else {
+            // Nếu không có returnUrl, chuyển hướng đến một trang mặc định
+            response.sendRedirect("homepage");
         }
     }
 

@@ -53,7 +53,6 @@
             font-size: 14px;
             color: #222222;
             font-weight: bold;
-            text-transform: capitalize;
             margin-top: 10px;
             height: 42px;
             border: 1px solid #e1e1e1;

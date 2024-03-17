@@ -39,10 +39,20 @@
             <div class="table-wrapper">
                 <div class="table-title">
                     <div class="row">
-                        <div class="col-sm-6">
+                        <div class="col-sm-2">
                             <h2><b>Manager Actor</b></h2>
                         </div>
-                        <div class="col-sm-6">
+                        <div class="dropdown col-sm-1">
+                            <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Select Action
+                                <span class="caret"></span></button>
+                            <ul class="dropdown-menu">
+                                <li><a href="managemovie">Movie</a></li>
+                                <li><a href="manageuser">User</a></li>
+                                <li><a href="managegenre">Genre</a></li>
+                                <li><a href="homepage">Home</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-sm-9">
                             <a href="#addActorModall" class="btn btn-success" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Add New Actor</span></a>
                             <a href="#deleteListActor" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>Delete</span></a>						
                         </div>

@@ -51,15 +51,18 @@ public class RegisterServlet extends HttpServlet {
 
         HttpSession session = request.getSession();
 
-        String name = request.getParameter("name-2");
-        String username = request.getParameter("username-2");
-        String email = request.getParameter("email-2");
-        String password = request.getParameter("password-2");
+        String name = request.getParameter("name");
+        String username = request.getParameter("username");
+        String email = request.getParameter("email");
+        String password = request.getParameter("password");
         try {
-            if (dao.getUserbyEmail(email) == null) {
-                dao.insert(name, username, email, password, 1, 1);
+            if (dao.getUserbyEmail(email) == null && dao.checkUsername(username)) {
+                dao.insertUser(name, username, email, password, 1, 1);
+                int id = dao.getUserbyEmail(email).getId();
 
-                session.setAttribute("email", email);
+                session.setAttribute("us", username);
+                session.setAttribute("ps", password);
+                session.setAttribute("id", id);
                 session.setAttribute("role", 1);
                 response.sendRedirect("homepage");
             } else {

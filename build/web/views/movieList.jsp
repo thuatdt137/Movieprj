@@ -11,6 +11,7 @@
     <!-- movielist07:38-->
     <head>
         <!-- Basic need -->
+        <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
         <title>Open Pediatrics</title>
         <meta charset="UTF-8">
         <meta name="description" content="">
@@ -27,9 +28,29 @@
         <!-- CSS files -->
         <link rel="stylesheet" href="css/plugins.css">
         <link rel="stylesheet" href="css/style.css">
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                document.getElementById('searchForm').addEventListener('submit', function (e) {
+                    e.preventDefault(); // Ngăn chặn hành động mặc định của form
+                    var form = e.target;
+                    var selectValue = form.querySelector('#searchType').value; // Lấy giá trị của select
+                    var inputText = form.querySelector('input[type="text"]').value;
 
+                    // Thay đổi action của form dựa trên giá trị của select
+                    if (selectValue === 'movie') {
+                        form.action = 'movielist';
+                    } else if (selectValue === 'actor') {
+                        form.action = 'actorlist';
+                    }
+
+                    // Gửi form đi với action đã thay đổi
+                    form.submit();
+                });
+            });
+        </script>
     </head>
     <body>
+
         <!--preloading-->
         <div id="preloader">
             <img class="logo" src="images/logo1.png" alt="" width="119" height="58">
@@ -39,86 +60,6 @@
             </div>
         </div>
         <!--end of preloading-->
-        <!--login form popup-->
-        <div class="login-wrapper" id="login-content">
-            <div class="login-content">
-                <a href="#" class="close">x</a>
-                <h3>Login</h3>
-                <form method="post" action="#">
-                    <div class="row">
-                        <label for="username">
-                            Username:
-                            <input type="text" name="username" id="username" placeholder="Hugh Jackman" pattern="^[a-zA-Z][a-zA-Z0-9-_\.]{8,20}$" required="required" />
-                        </label>
-                    </div>
-
-                    <div class="row">
-                        <label for="password">
-                            Password:
-                            <input type="password" name="password" id="password" placeholder="******" pattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$" required="required" />
-                        </label>
-                    </div>
-                    <div class="row">
-                        <div class="remember">
-                            <div>
-                                <input type="checkbox" name="remember" value="Remember me"><span>Remember me</span>
-                            </div>
-                            <a href="#">Forget password ?</a>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <button type="submit">Login</button>
-                    </div>
-                </form>
-                <div class="row">
-                    <p>Or via social</p>
-                    <div class="social-btn-2">
-                        <a class="fb" href="#"><i class="ion-social-facebook"></i>Facebook</a>
-                        <a class="tw" href="#"><i class="ion-social-twitter"></i>twitter</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!--end of login form popup-->
-        <!--signup form popup-->
-        <div class="login-wrapper"  id="signup-content">
-            <div class="login-content">
-                <a href="#" class="close">x</a>
-                <h3>sign up</h3>
-                <form method="post" action="#">
-                    <div class="row">
-                        <label for="username-2">
-                            Username:
-                            <input type="text" name="username" id="username-2" placeholder="Hugh Jackman" pattern="^[a-zA-Z][a-zA-Z0-9-_\.]{8,20}$" required="required" />
-                        </label>
-                    </div>
-
-                    <div class="row">
-                        <label for="email-2">
-                            your email:
-                            <input type="password" name="email" id="email-2" placeholder="" pattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$" required="required" />
-                        </label>
-                    </div>
-                    <div class="row">
-                        <label for="password-2">
-                            Password:
-                            <input type="password" name="password" id="password-2" placeholder="" pattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$" required="required" />
-                        </label>
-                    </div>
-                    <div class="row">
-                        <label for="repassword-2">
-                            re-type Password:
-                            <input type="password" name="password" id="repassword-2" placeholder="" pattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$" required="required" />
-                        </label>
-                    </div>
-                    <div class="row">
-                        <button type="submit">sign up</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-        <!--end of signup form popup-->
-
         <!-- BEGIN | Header -->
         <header class="ht-header">
             <div class="container">
@@ -133,23 +74,13 @@
                                 <span></span>
                             </div>
                         </div>
-                        <a href="index-2.html"><img class="logo" src="images/logo1.png" alt="" width="119" height="58"></a>
+                        <a href="homepage"><img class="logo" src="images/logo1.png" alt="" width="119" height="58"></a>
                     </div>
                     <!-- Collect the nav links, forms, and other content for toggling -->
                     <div class="collapse navbar-collapse flex-parent" id="bs-example-navbar-collapse-1">
                         <ul class="nav navbar-nav flex-child-menu menu-left">
                             <li class="hidden">
                                 <a href="#page-top"></a>
-                            </li>
-                            <li class="dropdown first">
-                                <a class="btn btn-default dropdown-toggle lv1" data-toggle="dropdown">
-                                    Home <i class="fa fa-angle-down" aria-hidden="true"></i>
-                                </a>
-                                <ul class="dropdown-menu level1">
-                                    <li><a href="index-2.html">Home 01</a></li>
-                                    <li><a href="homev2.html">Home 02</a></li>
-                                    <li><a href="homev3.html">Home 03</a></li>
-                                </ul>
                             </li>
                             <li class="dropdown first">
                                 <a class="btn btn-default dropdown-toggle lv1" data-toggle="dropdown" data-hover="dropdown">
@@ -163,9 +94,7 @@
                                             <li><a href="moviegridfw.html">movie grid full width</a></li>
                                         </ul>
                                     </li>			
-                                    <li><a href="movielist.html">Movie list</a></li>
-                                    <li><a href="moviesingle.html">Movie single</a></li>
-                                    <li class="it-last"><a href="seriessingle.html">Series single</a></li>
+                                    <li><a href="movielist">Movie list</a></li>
                                 </ul>
                             </li>
                             <li class="dropdown first">
@@ -173,31 +102,8 @@
                                     celebrities <i class="fa fa-angle-down" aria-hidden="true"></i>
                                 </a>
                                 <ul class="dropdown-menu level1">
-                                    <li><a href="celebritygrid01.html">celebrity grid 01</a></li>
-                                    <li><a href="celebritygrid02.html">celebrity grid 02 </a></li>
-                                    <li><a href="celebritylist.html">celebrity list</a></li>
+                                    <li><a href="actorlist">celebrity list</a></li>
                                     <li class="it-last"><a href="celebritysingle.html">celebrity single</a></li>
-                                </ul>
-                            </li>
-                            <li class="dropdown first">
-                                <a class="btn btn-default dropdown-toggle lv1" data-toggle="dropdown" data-hover="dropdown">
-                                    news <i class="fa fa-angle-down" aria-hidden="true"></i>
-                                </a>
-                                <ul class="dropdown-menu level1">
-                                    <li><a href="bloglist.html">blog List</a></li>
-                                    <li><a href="bloggrid.html">blog Grid</a></li>
-                                    <li class="it-last"><a href="blogdetail.html">blog Detail</a></li>
-                                </ul>
-                            </li>
-                            <li class="dropdown first">
-                                <a class="btn btn-default dropdown-toggle lv1" data-toggle="dropdown" data-hover="dropdown">
-                                    community <i class="fa fa-angle-down" aria-hidden="true"></i>
-                                </a>
-                                <ul class="dropdown-menu level1">
-                                    <li><a href="userfavoritegrid.html">user favorite grid</a></li>
-                                    <li><a href="userfavoritelist.html">user favorite list</a></li>
-                                    <li><a href="userprofile.html">user profile</a></li>
-                                    <li class="it-last"><a href="userrate.html">user rate</a></li>
                                 </ul>
                             </li>
                         </ul>
@@ -213,24 +119,37 @@
                                 </ul>
                             </li>                
                             <li><a href="#">Help</a></li>
-                            <li class="loginLink"><a href="#">LOG In</a></li>
-                            <li class="btn signupLink"><a href="#">sign up</a></li>
+                                <c:choose>
+                                    <c:when test="${empty sessionScope.us}">
+                                    <li class="loginservlet"><a href="login">LOG In</a></li>
+                                    <li class="btn registerservlet"><a href="register">sign up</a></li>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <c:if test="${sessionScope.role eq 0}">
+                                        <li><a href="manageuser">Manager</a></li>
+                                        </c:if>
+                                    <li class="logoutservlet"><a href="logout">Log OUT</a></li>
+                                    <li class="btn"><a href="userprofile">${sessionScope.us}</a></li>
+                                    </c:otherwise>
+                                </c:choose>
                         </ul>
                     </div>
                     <!-- /.navbar-collapse -->
                 </nav>
 
                 <!-- top search form -->
-                <div class="top-search">
-                    <select>
-                        <option value="united">TV show</option>
-                        <option value="saab">Others</option>
+                <form class="top-search" action="" method="get" id="searchForm">
+                    <select id="searchType">
+                        <option value="movie">Movie</option>
+                        <option value="actor">Actor</option>
                     </select>
-                    <input type="text" placeholder="Search for a movie, TV Show or celebrity that you are looking for">
-                </div>
+                    <input name="title" type="text" placeholder="Search for a movie, actor that you are looking for">
+                    <button type="submit" style="display:none"></button>
+                </form>
             </div>
         </header>
         <!-- END | Header -->
+
 
         <div class="hero common-hero">
             <div class="container">
@@ -251,148 +170,76 @@
             <div class="container">
                 <div class="row ipad-width2">
                     <div class="col-md-8 col-sm-12 col-xs-12">
-                        <div class="topbar-filter">
-                            <p>Found <span>1,608 movies</span> in total</p>
-                            <label>Sort by:</label>
-                            <select>
-                                <option value="popularity">Popularity Descending</option>
-                                <option value="popularity">Popularity Ascending</option>
-                                <option value="rating">Rating Descending</option>
-                                <option value="rating">Rating Ascending</option>
-                                <option value="date">Release date Descending</option>
-                                <option value="date">Release date Ascending</option>
-                            </select>
-                            <a href="movielist.html" class="list"><i class="ion-ios-list-outline active"></i></a>
-                            <a  href="moviegrid.html" class="grid"><i class="ion-grid"></i></a>
-                        </div>
-                        <div class="movie-item-style-2">
-                            <img src="images/uploads/mv1.jpg" alt="">
-                            <div class="mv-item-infor">
-                                <h6><a href="moviesingle.html">oblivion <span>(2012)</span></a></h6>
-                                <p class="rate"><i class="ion-android-star"></i><span>8.1</span> /10</p>
-                                <p class="describe">Earth's mightiest heroes must come together and learn to fight as a team if they are to stop the mischievous Loki and his alien army from enslaving humanity...</p>
-                                <p class="run-time"> Run Time: 2h21’    .     <span>MMPA: PG-13 </span>    .     <span>Release: 1 May 2015</span></p>
-                                <p>Director: <a href="#">Joss Whedon</a></p>
-                                <p>Stars: <a href="#">Robert Downey Jr.,</a> <a href="#">Chris Evans,</a> <a href="#">  Chris Hemsworth</a></p>
+                        <c:forEach items="${movies}" var="movie">
+                            <div class="movie-item-style-2">
+                                <img src="${urlImg}/${movie.img}" alt="" height="261px" width="170px">
+                                <div class="mv-item-infor">
+                                    <h6><a href="homepage">${movie.title}</a></h6>
+                                    <p class="rate"><i class="ion-android-star"></i><span>${movie.rate}</span> /5</p>
+                                    <p class="describe">${movie.descript}</p>
+                                    <p class="run-time"><span>Release: ${movie.date}</span></p>
+                                    <p>Stars: <c:forEach items="${movie.actor}" var="actor">
+                                            <a href="actordetail?actor=${actor.id}">${actor.name}</a>
+                                        </c:forEach></p>
+                                </div>
                             </div>
-                        </div>
-                        <div class="movie-item-style-2">
-                            <img src="images/uploads/mv2.jpg" alt="">
-                            <div class="mv-item-infor">
-                                <h6><a href="moviesingle.html">into the wild <span>(2014)</span></a></h6>
-                                <p class="rate"><i class="ion-android-star"></i><span>7.8</span> /10</p>
-                                <p class="describe">As Steve Rogers struggles to embrace his role in the modern world, he teams up with a fellow Avenger and S.H.I.E.L.D agent, Black Widow, to battle a new threat...</p>
-                                <p class="run-time"> Run Time: 2h21’    .     <span>MMPA: PG-13 </span>    .     <span>Release: 1 May 2015</span></p>
-                                <p>Director: <a href="#">Anthony Russo,</a><a href="#">Joe Russo</a></p>
-                                <p>Stars: <a href="#">Chris Evans,</a> <a href="#">Samuel L. Jackson,</a> <a href="#">  Scarlett Johansson</a></p>
-                            </div>
-                        </div>
-                        <div class="movie-item-style-2">
-                            <img src="images/uploads/mv3.jpg" alt="">
-                            <div class="mv-item-infor">
-                                <h6><a href="moviesingle.html">blade runner  <span>(2015)</span></a></h6>
-                                <p class="rate"><i class="ion-android-star"></i><span>7.3</span> /10</p>
-                                <p class="describe">Armed with a super-suit with the astonishing ability to shrink in scale but increase in strength, cat burglar Scott Lang must embrace his inner hero and help...</p>
-                                <p class="run-time"> Run Time: 2h21’    .     <span>MMPA: PG-13 </span>    .     <span>Release: 1 May 2015</span></p>
-                                <p>Director: <a href="#">Peyton Reed</a></p>
-                                <p>Stars: <a href="#">Paul Rudd,</a> <a href="#"> Michael Douglas</a></p>
-                            </div>
-                        </div>
-                        <div class="movie-item-style-2">
-                            <img src="images/uploads/mv4.jpg" alt="">
-                            <div class="mv-item-infor">
-                                <h6><a href="moviesingle.html">Mulholland pride<span> (2013)  </span></a></h6>
-                                <p class="rate"><i class="ion-android-star"></i><span>7.2</span> /10</p>
-                                <p class="describe">When Tony Stark's world is torn apart by a formidable terrorist called the Mandarin, he starts an odyssey of rebuilding and retribution.</p>
-                                <p class="run-time"> Run Time: 2h21’    .     <span>MMPA: PG-13 </span>    .     <span>Release: 1 May 2015</span></p>
-                                <p>Director: <a href="#">Shane Black</a></p>
-                                <p>Stars: <a href="#">Robert Downey Jr., </a> <a href="#">  Guy Pearce,</a><a href="#">Don Cheadle</a></p>
-                            </div>
-                        </div>
-                        <div class="movie-item-style-2">
-                            <img src="images/uploads/mv5.jpg" alt="">
-                            <div class="mv-item-infor">
-                                <h6><a href="moviesingle.html">skyfall: evil of boss<span> (2013)  </span></a></h6>
-                                <p class="rate"><i class="ion-android-star"></i><span>7.0</span> /10</p>
-                                <p class="describe">When Tony Stark's world is torn apart by a formidable terrorist called the Mandarin, he starts an odyssey of rebuilding and retribution.</p>
-                                <p class="run-time"> Run Time: 2h21’    .     <span>MMPA: PG-13 </span>    .     <span>Release: 1 May 2015</span></p>
-                                <p>Director: <a href="#">Alan Taylor</a></p>
-                                <p>Stars: <a href="#">Chris Hemsworth,  </a> <a href="#">  Natalie Portman,</a><a href="#">Tom Hiddleston</a></p>
-                            </div>
-                        </div>
-                        <div class="topbar-filter">
-                            <label>Movies per page:</label>
-                            <select>
-                                <option value="range">5 Movies</option>
-                                <option value="saab">10 Movies</option>
-                            </select>
-                            <div class="pagination2">
-                                <span>Page 1 of 2:</span>
-                                <a class="active" href="#">1</a>
-                                <a href="#">2</a>
-                                <a href="#"><i class="ion-arrow-right-b"></i></a>
-                            </div>
-                        </div>
+                        </c:forEach>
+                        <c:if test="${msg ne null}">
+                            <p>${msg}</p>
+                        </c:if>
                     </div>
                     <div class="col-md-4 col-sm-12 col-xs-12">
                         <div class="sidebar">
                             <div class="searh-form">
                                 <h4 class="sb-title">Search for movie</h4>
-                                <form class="form-style-1" action="#">
+                                <form class="form-style-1" action="movielist" method="post">
                                     <div class="row">
                                         <div class="col-md-12 form-it">
                                             <label>Movie name</label>
-                                            <input type="text" placeholder="Enter keywords">
+                                            <input name="title" type="text" placeholder="Enter keywords">
                                         </div>
                                         <div class="col-md-12 form-it">
                                             <label>Genres & Subgenres</label>
                                             <div class="group-ip">
                                                 <select
-                                                    name="skills" multiple="" class="ui fluid dropdown">
+                                                    name="genress" multiple="" class="ui fluid dropdown">
                                                     <option value="">Enter to filter genres</option>
-                                                    <option value="Action1">Action 1</option>
-                                                    <option value="Action2">Action 2</option>
-                                                    <option value="Action3">Action 3</option>
-                                                    <option value="Action4">Action 4</option>
-                                                    <option value="Action5">Action 5</option>
+                                                    <c:forEach items="${genres}" var="genre">
+                                                        <option value="${genre.name}">${genre.name}</option>
+                                                    </c:forEach>
                                                 </select>
                                             </div>
-
-                                        </div>
-                                        <div class="col-md-12 form-it">
-                                            <label>Rating Range</label>
-
-                                            <select>
-                                                <option value="range">-- Select the rating range below --</option>
-                                                <option value="saab">-- Select the rating range below --</option>
-                                                <option value="saab">-- Select the rating range below --</option>
-                                                <option value="saab">-- Select the rating range below --</option>
-                                            </select>
 
                                         </div>
                                         <div class="col-md-12 form-it">
                                             <label>Release Year</label>
                                             <div class="row">
                                                 <div class="col-md-6">
-                                                    <select>
-                                                        <option value="range">From</option>
-                                                        <option value="number">10</option>
-                                                        <option value="number">20</option>
-                                                        <option value="number">30</option>
+                                                    <select class="start_year" name="startYear">
+                                                        <option value="1940">From</option>
+                                                        <option value="1940">1940</option>
+                                                        <option value="1960">1960</option>
+                                                        <option value="1980">1980</option>
+                                                        <option value="2000">2000</option>
+                                                        <option value="2010">2010</option>
+                                                        <option value="2020">2020</option>
                                                     </select>
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <select>
-                                                        <option value="range">To</option>
-                                                        <option value="number">20</option>
-                                                        <option value="number">30</option>
-                                                        <option value="number">40</option>
+                                                    <select class="end_year" name="endYear">
+                                                        <option value="2025">To</option>
+                                                        <option value="1960">1960</option>
+                                                        <option value="1980">1980</option>
+                                                        <option value="2000">2000</option>
+                                                        <option value="2010">2010</option>
+                                                        <option value="2020">2020</option>
+                                                        <option value="2025">2025</option>
                                                     </select>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-md-12 ">
-                                            <input class="submit" type="submit" value="submit">
+                                            <button class="button submit hehe" type="submit">Submit</button>
                                         </div>
                                     </div>
                                 </form>
@@ -482,6 +329,29 @@
         <script src="js/plugins2.js"></script>
         <script src="js/custom.js"></script>
     </body>
+    <style>
+        .hehe {
+            font-family: 'Dosis', sans-serif;
+            font-size: 14px;
+            color: #ffffff;
+            font-weight: bold;
+            text-transform: uppercase;
+            background: #dd003f;
+            width: 100%;
+            height: 40px;
+            border: none;
+        }
+    </style>
+    <script>
+            document.querySelector('.button').onclick = function () {
+                var startYear = document.querySelector('.start_year').value,
+                        endYear = document.querySelector('.end_year').value;
+                if (startYear >= endYear) {
+                    alert("Start Year greater than end year.");
+                    return false;
+                }
+            };
+    </script>
 
     <!-- movielist07:38-->
 </html>

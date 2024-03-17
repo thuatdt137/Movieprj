@@ -463,6 +463,69 @@ public class DAO {
         return id;
     }
 
+    public String[] getStringGenre() {
+        ArrayList<Genre> genres = INSTANCE.getGenres();
+        String k[] = new String[genres.size()];
+        for (int i = 0; i < k.length; i++) {
+            k[i] = genres.get(i).getName();
+        }
+        return k;
+    }
+
+    public ArrayList<Movie> searchMovies(String title, String[] genres, int startYear, int endYear) {
+        ArrayList<Movie> movies = new ArrayList<>();
+        try {
+            System.out.println("Loading data...");
+            String sql1 = """
+                         SELECT DISTINCT Movie.*
+                             FROM Movie
+                             INNER JOIN MovieGenre ON Movie.MovieID = MovieGenre.MovieID
+                             INNER JOIN Genre ON MovieGenre.GenreID = Genre.GenreID
+                             WHERE 
+                                 Movie.Title LIKE ?
+                                 AND YEAR(Movie.ReleaseDate) BETWEEN ? AND ?
+                                 AND Genre.GenreName IN (""";
+
+            for (int i = 0; i < genres.length; i++) {
+                sql1 += (i == 0 ? "?" : ", ?");
+            }
+            String sql = sql1 + """
+                                )
+                                AND Movie.StatusRelease = 1
+                                AND Movie.Status = 1;""";
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, "%" + title + "%");
+            ps.setInt(2, startYear);
+            ps.setInt(3, endYear);
+            for (int i = 0; i < genres.length; i++) {
+                ps.setString(i + 4, genres[i]);
+            }
+            System.out.println(sql);
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Movie h = new Movie();
+                h.setId(rs.getInt("MovieID"));
+                h.setTitle(rs.getString("Title"));
+                h.setDate(rs.getDate("ReleaseDate"));
+                h.setDescript(rs.getString("Description"));
+                h.setImg(rs.getString("ThumbSource"));
+                h.setSrc(rs.getString("SourceLink"));
+                h.setTrail(rs.getString("TrailerLink"));
+                h.setStatus(rs.getInt("Status"));
+                h.setStatusrelease(rs.getInt("StatusRelease"));
+                movies.add(h);
+            }
+
+        } catch (SQLException e) {
+            status = "Error at read Users " + e.getMessage();
+        }
+        setRating(movies);
+        setGenre(movies);
+        setActor(movies);
+        return movies;
+    }
+
     public ArrayList<Movie> pagingMovies(int index, int numPerPage) {
         ArrayList<Movie> movies = new ArrayList<>();
         try {
@@ -845,6 +908,17 @@ public class DAO {
         }
     }
 
+    public boolean checkUsername(String username) {
+        boolean check = true;
+        ArrayList<User> users = INSTANCE.getUsers();
+        for (User user : users) {
+            if (user.getUsername().equals(username)) {
+                check = false;
+            }
+        }
+        return check;
+    }
+
     public void updateUser(String Name, String Username, String Password, String Email, int UserID) {
 
         System.out.println("Update data...");
@@ -1105,7 +1179,7 @@ public class DAO {
         return check;
     }
 
-    public boolean insert(String Name, String Username, String Password, String Email, int Role, int Status) {
+    public boolean insertUser(String Name, String Username, String Password, String Email, int Role, int Status) {
         boolean check = false;
 
         System.out.println("Saving data...");
@@ -1114,8 +1188,8 @@ public class DAO {
             PreparedStatement ps = con.prepareStatement(sql);
             ps.setString(1, Name);
             ps.setString(2, Username);
-            ps.setString(3, Email);
-            ps.setString(4, Password);
+            ps.setString(3, Password);
+            ps.setString(4, Email);
             ps.setInt(5, Role);
             ps.setInt(6, Status);
 
@@ -1290,6 +1364,8 @@ public class DAO {
     }
 
     public static void main(String[] args) {
-        System.out.println(DAO.INSTANCE.getUsers().get(1).getEmail());
+        String[] hehe = {"Drama", "Crime", "Action"};
+        DAO.INSTANCE.searchMovies("the", hehe, 1940, 2020);
+        System.out.println(DAO.INSTANCE.searchMovies("the", hehe, 1900, 2020).get(0).toString());
     }
 }
