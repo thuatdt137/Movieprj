@@ -52,15 +52,6 @@
     </head>
     <body>
 
-        <!--preloading-->
-        <div id="preloader">
-            <img class="logo" src="images/logo1.png" alt="" width="119" height="58">
-            <div id="status">
-                <span></span>
-                <span></span>
-            </div>
-        </div>
-        <!--end of preloading-->
         <!-- BEGIN | Header -->
         <header class="ht-header">
             <div class="container">
@@ -171,7 +162,7 @@
                                 <div class="title-in">
                                     <div class="cate">
                                         <c:forEach items="${movie_new.genre}" var="genre_1">
-                                            <span class="blue"><a href="#">${genre_1.name}</a></span>
+                                            <span class="blue"><a href="movielist?genre_movie=${genre_1.name}">${genre_1.name}</a></span>
                                             </c:forEach>
                                     </div>
                                     <h6><a href="moviedetail?movie=${movie_new.id}">${movie_new.title}</a></h6>

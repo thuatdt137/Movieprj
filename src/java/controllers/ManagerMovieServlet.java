@@ -47,7 +47,7 @@ public class ManagerMovieServlet extends HttpServlet {
         }
 
         ArrayList<User> list_user = dao.pagingAccount(index, numPerPage);
-        ArrayList<Movie> list_movie = dao.pagingMovies(index, numPerPage);
+        ArrayList<Movie> list_movie = dao.pagingMovies(index, numPerPage, "2");
         request.setAttribute("listA", list_user);
         request.setAttribute("listB", list_movie);
         request.setAttribute("numUser", count);
@@ -82,7 +82,7 @@ public class ManagerMovieServlet extends HttpServlet {
             endPage++;
         }
 
-        ArrayList<Movie> list_movie = dao.pagingMovies(index, numPerPage);
+        ArrayList<Movie> list_movie = dao.pagingMovies(index, numPerPage, "2");
 
         request.setAttribute("listA", list_movie);
         request.setAttribute("genres_list", dao.getGenres());

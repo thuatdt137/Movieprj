@@ -48,7 +48,7 @@ public class UpdateMovieServlet extends HttpServlet {
         int id;
         try {
             id = Integer.parseInt(id_string);
-            Movie movie = dao.getMovieByID(id);
+            Movie movie = dao.getMovieByIDAD(id);
             request.setAttribute("movieSelected", movie);
             request.getRequestDispatcher("views/updatemovie.jsp").forward(request, response);
         } catch (ServletException | IOException | NumberFormatException e) {

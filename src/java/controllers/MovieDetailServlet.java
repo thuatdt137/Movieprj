@@ -11,6 +11,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.ArrayList;
 import models.*;
 
@@ -60,6 +61,7 @@ public class MovieDetailServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
         String movie_string = request.getParameter("movie") == null ? "" : request.getParameter("movie");
         String urlImgPath = getServletContext().getInitParameter("UrlImage");
         String urlImgPath2 = getServletContext().getInitParameter("Urlactors");
@@ -72,8 +74,31 @@ public class MovieDetailServlet extends HttpServlet {
         } catch (NumberFormatException e) {
         }
         Movie movie = dao.getMovieByID(id);
+        if (movie == null) {
+            request.getRequestDispatcher("404").forward(request, response);
+        }
         ArrayList<Actor> actors = dao.getActorsbyMovie(id);
         ArrayList<Genre> genres = dao.getGenresbyMovie(id);
+
+        if (session != null) {
+            Object user_string = session.getAttribute("id");
+            int idd;
+            if (user_string != null) {
+                try {
+                    idd = (Integer) user_string;
+                    for (Movie movieLove : dao.getFavoriteMoviesByUser(idd, 1, 100)) {
+                        if (movieLove.getId() == movie.getId()) {
+                            request.setAttribute("islove", 1);
+                            break;
+                        }
+                    }
+
+                } catch (NumberFormatException e) {
+                }
+            } else {
+                request.setAttribute("islove", 0);
+            }
+        }
 
         request.setAttribute("moviee", movie);
         request.setAttribute("actors", actors);
@@ -95,7 +120,7 @@ public class MovieDetailServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+
     }
 
     /**

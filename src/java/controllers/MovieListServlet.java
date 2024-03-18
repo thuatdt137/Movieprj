@@ -7,6 +7,7 @@ package controllers;
 import dal.DAO;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -28,6 +29,13 @@ public class MovieListServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        String currentURL = request.getRequestURL().toString(); // Lấy URL của trang hiện tại
+
+        Cookie cookie = new Cookie("previousURL", currentURL); // Tạo một cookie mới
+        cookie.setMaxAge(60 * 60); // Thiết lập thời gian sống của cookie (ở đây là 1 giờ)
+
+        response.addCookie(cookie); // Thêm cookie vào phản hồi
+
         String urlImgPath = getServletContext().getInitParameter("UrlImage");
         String urlImgPath2 = getServletContext().getInitParameter("Urlactors");
         LocalDate currentDate = LocalDate.now();
@@ -35,15 +43,14 @@ public class MovieListServlet extends HttpServlet {
 
         String search_title = request.getParameter("title") == null ? "" : request.getParameter("title");
         String genre_list = request.getParameter("genre_movie") == null ? "" : request.getParameter("genre_movie");
-        if (!search_title.isBlank()) {
-
+        if (!search_title.isEmpty()) {
             ArrayList<Movie> movies = dao.searchMovies(search_title, dao.getStringGenre(), 0, year);
             request.setAttribute("movies", movies);
-        } else if (!genre_list.isBlank()) {
+        } else if (!genre_list.isEmpty()) {
             ArrayList<Movie> movies = dao.getMoviesbyGenre(genre_list);
             request.setAttribute("movies", movies);
         } else {
-            ArrayList<Movie> movies = dao.getMovies();
+            ArrayList<Movie> movies = dao.getMovies("1");
             request.setAttribute("movies", movies);
         }
         request.setAttribute("urlImg", urlImgPath);

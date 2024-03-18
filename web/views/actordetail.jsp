@@ -48,6 +48,12 @@
                     form.submit();
                 });
             });
+
+            document.getElementById("loginButton").addEventListener("click", function () {
+                // Lấy URL hiện tại và lưu vào cookie với tên là "returnUrl"
+                var currentUrl = window.location.href;
+                document.cookie = "returnUrl=" + encodeURIComponent(currentUrl) + ";path=/";
+            });
         </script>
     </head>
     <body>
@@ -122,7 +128,7 @@
                             <li><a href="#">Help</a></li>
                                 <c:choose>
                                     <c:when test="${empty sessionScope.us}">
-                                    <li class="loginservlet"><a href="login">LOG In</a></li>
+                                    <li class="loginservlet"><a id="loginButton" href="login">LOG In</a></li>
                                     <li class="btn registerservlet"><a href="register">sign up</a></li>
                                     </c:when>
                                     <c:otherwise>

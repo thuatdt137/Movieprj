@@ -56,14 +56,14 @@ public class DAO {
     }
 
     public ArrayList<Movie> topNewMovie() {
-        ArrayList<Movie> movies = INSTANCE.getMovies();
+        ArrayList<Movie> movies = INSTANCE.getMovies("1");
         Collections.sort(movies, Comparator.comparing(Movie::getDate).reversed());
 
         return movies;
     }
 
     public ArrayList<Movie> comingSoonMovie() {
-        ArrayList<Movie> movies = INSTANCE.getMovies();
+        ArrayList<Movie> movies = INSTANCE.getMovies("1");
         movies.removeIf(movie -> movie.getStatusrelease() != 0);
         // Filter movies based on date current
         //ZonedDateTime currentDateTime = ZonedDateTime.now();
@@ -74,7 +74,7 @@ public class DAO {
     }
 
     public ArrayList<Movie> topRateMovie() {
-        ArrayList<Movie> movies = INSTANCE.getMovies();
+        ArrayList<Movie> movies = INSTANCE.getMovies("1");
         Collections.sort(movies, Comparator.comparing(Movie::getRate).reversed());
 
         return movies;
@@ -224,7 +224,8 @@ public class DAO {
                      WHERE
                          MovieActor.ActorID = ?
                      GROUP BY
-                         Movie.MovieID, Movie.Title, Movie.ReleaseDate, Movie.Description, Movie.ThumbSource, Movie.SourceLink, Movie.TrailerLink, Movie.Status, Movie.StatusRelease;""";
+                         Movie.MovieID, Movie.Title, Movie.ReleaseDate, Movie.Description, Movie.ThumbSource, Movie.SourceLink, Movie.TrailerLink, Movie.Status, Movie.StatusRelease
+                     HAVING Movie.Status = 1""";
             PreparedStatement ps = con.prepareStatement(sql);
             ps.setInt(1, actorID);
             ResultSet rs = ps.executeQuery();
@@ -428,7 +429,19 @@ public class DAO {
     }
 
     public Movie getMovieByID(int id) {
-        ArrayList<Movie> movies = INSTANCE.getMovies();
+        ArrayList<Movie> movies = INSTANCE.getMovies("1");
+        Movie movie = null;
+        for (Movie movy : movies) {
+            if (movy.getId() == id) {
+                movie = movy;
+                break;
+            }
+        }
+        return movie;
+    }
+
+    public Movie getMovieByIDAD(int id) {
+        ArrayList<Movie> movies = INSTANCE.getMovies("2");
         Movie movie = null;
         for (Movie movy : movies) {
             if (movy.getId() == id) {
@@ -441,7 +454,19 @@ public class DAO {
 
     public int getIDMovieByTitle(String title) {
         int id = -1;
-        ArrayList<Movie> movies = INSTANCE.getMovies();
+        ArrayList<Movie> movies = INSTANCE.getMovies("1");
+        for (Movie movy : movies) {
+            if (movy.getTitle().equals(title)) {
+                id = movy.getId();
+                break;
+            }
+        }
+        return id;
+    }
+
+    public int getIDMovieByTitleAD(String title) {
+        int id = -1;
+        ArrayList<Movie> movies = INSTANCE.getMovies("2");
         for (Movie movy : movies) {
             if (movy.getTitle().equals(title)) {
                 id = movy.getId();
@@ -491,7 +516,6 @@ public class DAO {
             }
             String sql = sql1 + """
                                 )
-                                AND Movie.StatusRelease = 1
                                 AND Movie.Status = 1;""";
             PreparedStatement ps = con.prepareStatement(sql);
             ps.setString(1, "%" + title + "%");
@@ -526,7 +550,7 @@ public class DAO {
         return movies;
     }
 
-    public ArrayList<Movie> pagingMovies(int index, int numPerPage) {
+    public ArrayList<Movie> pagingMovies(int index, int numPerPage, String status) {
         ArrayList<Movie> movies = new ArrayList<>();
         try {
             System.out.println("Loading data...");
@@ -540,12 +564,26 @@ public class DAO {
                              UserFavoriteMovies ON Movie.MovieID = UserFavoriteMovies.MovieID AND UserFavoriteMovies.isLove = 1
                          GROUP BY
                              Movie.MovieID, Movie.Title, Movie.ReleaseDate, Movie.Description, Movie.ThumbSource, Movie.SourceLink, Movie.TrailerLink, Movie.Status, Movie.StatusRelease
+                         
+                         """;
+            if (status.equals("2")) {
+                sql += """
                          ORDER BY
                              Movie.MovieID
                          OFFSET
                              ? ROWS
                          FETCH NEXT
                              ? ROWS ONLY;""";
+            } else {
+                sql += """
+                     having Movie.Status = 1
+                         ORDER BY
+                             Movie.MovieID
+                         OFFSET
+                             ? ROWS
+                         FETCH NEXT
+                             ? ROWS ONLY;""";
+            }
             PreparedStatement ps = con.prepareStatement(sql);
             ps.setInt(1, (index - 1) * numPerPage);
             ps.setInt(2, numPerPage);
@@ -587,7 +625,7 @@ public class DAO {
                     JOIN
                         UserFavoriteMovies ON Movie.MovieID = UserFavoriteMovies.MovieID
                     WHERE
-                        UserFavoriteMovies.UserID = ? AND UserFavoriteMovies.isLove = 1
+                        UserFavoriteMovies.UserID = ? AND UserFavoriteMovies.isLove = 1 and Movie.Status = 1
                     GROUP BY
                         Movie.MovieID, Movie.Title, Movie.ReleaseDate, Movie.Description, Movie.ThumbSource, Movie.SourceLink, Movie.TrailerLink, Movie.Status, Movie.StatusRelease
                     ORDER BY
@@ -616,7 +654,7 @@ public class DAO {
         return favoriteMovies;
     }
 
-    public ArrayList<Movie> getMovies() {
+    public ArrayList<Movie> getMovies(String status) {
         ArrayList<Movie> movies = new ArrayList<>();
         try {
             System.out.println("Loading data...");
@@ -629,7 +667,10 @@ public class DAO {
                          LEFT JOIN
                              UserFavoriteMovies ON Movie.MovieID = UserFavoriteMovies.MovieID AND UserFavoriteMovies.isLove = 1
                          GROUP BY
-                             Movie.MovieID, Movie.Title, Movie.ReleaseDate, Movie.Description, Movie.ThumbSource, Movie.SourceLink, Movie.TrailerLink, Movie.Status, Movie.StatusRelease;""";
+                             Movie.MovieID, Movie.Title, Movie.ReleaseDate, Movie.Description, Movie.ThumbSource, Movie.SourceLink, Movie.TrailerLink, Movie.Status, Movie.StatusRelease""";
+            if (status.equals("1")) {
+                sql += " having Movie.Status = 1";
+            }
             PreparedStatement ps = con.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -1364,8 +1405,11 @@ public class DAO {
     }
 
     public static void main(String[] args) {
-        String[] hehe = {"Drama", "Crime", "Action"};
-        DAO.INSTANCE.searchMovies("the", hehe, 1940, 2020);
-        System.out.println(DAO.INSTANCE.searchMovies("the", hehe, 1900, 2020).get(0).toString());
+//        String[] hehe = {"Drama", "Crime", "Action"};
+//        DAO.INSTANCE.searchMovies("the", hehe, 1940, 2020);
+//        System.out.println(DAO.INSTANCE.searchMovies("the", getINSTANCE().getStringGenre(), 1900, 2020).get(0).toString());
+        for (String string : INSTANCE.getStringGenre()) {
+            System.out.println(string);
+        }
     }
 }

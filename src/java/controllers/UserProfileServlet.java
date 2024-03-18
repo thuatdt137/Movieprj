@@ -97,8 +97,6 @@ public class UserProfileServlet extends HttpServlet {
         String email = request.getParameter("email");
         try {
             if (old_password.equals(session.getAttribute("ps")) && dao.checkUsername(username)) {
-                session.removeAttribute("us");
-                session.removeAttribute("ps");
                 session.setAttribute("us", username);
                 session.setAttribute("ps", new_password);
                 dao.updateUser(name, username, new_password, email, id);

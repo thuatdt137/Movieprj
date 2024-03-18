@@ -47,7 +47,7 @@ public class ManagerUserServlet extends HttpServlet {
         }
 
         ArrayList<User> list_user = dao.pagingAccount(index, numPerPage);
-        ArrayList<Movie> list_movie = dao.pagingMovies(index, numPerPage);
+        ArrayList<Movie> list_movie = dao.pagingMovies(index, numPerPage, "1");
         request.setAttribute("listA", list_user);
         request.setAttribute("listB", list_movie);
         request.setAttribute("numUser", count);

@@ -44,7 +44,7 @@
                             </ul>
                         </div>
                         <div class="col-sm-9">
-                            <a href="#addMovieModall" class="btn btn-success" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Add New User</span></a>
+                            <a href="#addMovieModall" class="btn btn-success" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Add New Movie</span></a>
                             <a href="#deleteListMovie" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>Delete</span></a>						
                         </div>
                     </div>

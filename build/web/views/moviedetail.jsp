@@ -186,7 +186,14 @@
                         <div class="movie-single-ct main-content">
                             <h1 class="bd-hd">${moviee.title} <span>${moviee.date}</span></h1>
                             <div class="social-btn">
-                                <a href="#" class="parent-btn"><i class="ion-heart"></i> Add to Favorite</a>
+                                <c:choose>
+                                    <c:when test="${empty islove || islove eq 0}">
+                                        <a href="#" class="parent-btn"><i class="ion-heart-broken"></i> Add to Favorite</a>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <a href="#" class="parent-btn"><i class="ion-heart"></i> Add to Favorite</a>
+                                    </c:otherwise>
+                                </c:choose>
                                 <div class="hover-bnt">
                                     <a href="#" class="parent-btn"><i class="ion-android-share-alt"></i>share</a>
                                     <div class="hvr-item">
@@ -195,7 +202,7 @@
                                         <a href="#" class="hvr-grow"><i class="ion-social-googleplus"></i></a>
                                         <a href="#" class="hvr-grow"><i class="ion-social-youtube"></i></a>
                                     </div>
-                                </div>		
+                                </div>
                             </div>
                             <div class="movie-rate">
                                 <div class="rate">
@@ -206,10 +213,6 @@
                                 </div>
                                 <div class="rate-star">
                                     <p>Rate This Movie:  </p>
-                                    <i class="ion-ios-star"></i>
-                                    <i class="ion-ios-star"></i>
-                                    <i class="ion-ios-star"></i>
-                                    <i class="ion-ios-star"></i>
                                     <i class="ion-ios-star"></i>
                                     <i class="ion-ios-star"></i>
                                     <i class="ion-ios-star"></i>
@@ -284,7 +287,7 @@
                                                         <h6>Genres:</h6>
                                                         <p>
                                                             <c:forEach items="${genres}" var="genre">
-                                                                <a href="#">${genre.name}</a>
+                                                                <a href="movielist?genre_movie=${genre.name}">${genre.name}</a>
                                                             </c:forEach>
                                                         </p>
                                                     </div>

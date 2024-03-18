@@ -111,6 +111,13 @@ public class AuthorizationFilter implements Filter {
         // Kiểm tra xem người dùng đã đăng nhập chưa
         boolean loggedIn = (session != null && session.getAttribute("us") != null);
 
+        // Kiểm tra nếu người dùng đã đăng nhập và đang truy cập lại trang đăng nhập hoặc đăng ký
+        if (loggedIn && (path.equals("/login") || path.equals("/register"))) {
+            // Nếu đã đăng nhập và đang cố gắng truy cập lại trang đăng nhập hoặc đăng ký, chuyển hướng đến trang chính hoặc trang khác
+            httpResponse.sendRedirect(httpRequest.getContextPath() + "/homepage");
+            return;
+        }
+
         // Kiểm tra các trang cụ thể cần chặn
         if (path.startsWith("/manageuser") || path.startsWith("/managegenre")
                 || path.startsWith("/managemovie") || path.startsWith("/manageactor")

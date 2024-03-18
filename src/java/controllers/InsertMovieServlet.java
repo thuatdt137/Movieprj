@@ -32,7 +32,7 @@ public class InsertMovieServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.setAttribute("movie", dao.getMovies());
+        request.setAttribute("movie", dao.getMovies("2"));
         request.getRequestDispatcher("managemovie").forward(request, response);
     }
 
@@ -49,11 +49,11 @@ public class InsertMovieServlet extends HttpServlet {
             throws ServletException, IOException {
         int status;
         PrintWriter out = response.getWriter();
-        String urlImgPath = getServletContext().getInitParameter("UrlImg");
+        String urlImgPath = getServletContext().getInitParameter("UrlImage");
 
         String[] genres = request.getParameterValues("genres");
         String[] actors = request.getParameterValues("actors");
-        out.println(Arrays.toString(genres));
+        //out.println(Arrays.toString(genres));
 
         String name = request.getParameter("nameinsert");
         String date = request.getParameter("dateinsert");

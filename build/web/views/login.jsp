@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
+        <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
@@ -86,7 +87,7 @@
                                             <input type="password" id="form3Example4cdg" class="form-control form-control-lg" name="password"/>
                                             <label class="form-label" for="form3Example4cdg">Password</label>
                                         </div>
-
+                                        <p class="form-outline mb-4" style="color: red; text-align: center">${msg}</p>
                                         <div class="d-flex justify-content-center">
                                             <button type="submit" class="btn btn-custom btn-block btn-lg">Sign In</button>
                                         </div>
