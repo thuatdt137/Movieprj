@@ -188,10 +188,10 @@
                             <div class="social-btn">
                                 <c:choose>
                                     <c:when test="${empty islove || islove eq 0}">
-                                        <a href="#" class="parent-btn"><i class="ion-heart-broken"></i> Add to Favorite</a>
+                                        <a href="changelove?mid=${moviee.id}" class="parent-btn"><i class="ion-heart-broken"></i> Add to Favorite</a>
                                     </c:when>
                                     <c:otherwise>
-                                        <a href="#" class="parent-btn"><i class="ion-heart"></i> Add to Favorite</a>
+                                        <a href="changelove?mid=${moviee.id}" class="parent-btn"><i class="ion-heart"></i> Add to Favorite</a>
                                     </c:otherwise>
                                 </c:choose>
                                 <div class="hover-bnt">

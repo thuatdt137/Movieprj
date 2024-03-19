@@ -6,8 +6,15 @@
             <file>file:/E:/prj301/Movieprj/src/java/dal/DAO.java</file>
             <file>file:/E:/prj301/Movieprj/src/java/controllers/Homepage.java</file>
             <file>file:/E:/prj301/Movieprj/web/views/home.jsp</file>
+            <file>file:/E:/prj301/Movieprj/src/java/controllers/ActorListServlet.java</file>
+            <file>file:/E:/prj301/Movieprj/src/java/controllers/UpdateUserServlet.java</file>
+            <file>file:/E:/prj301/Movieprj/src/java/controllers/SearchServlet.java</file>
+            <file>file:/E:/prj301/Movieprj/src/java/controllers/RegisterServlet.java</file>
+            <file>file:/E:/prj301/Movieprj/src/java/controllers/DeleteMovieServlet.java</file>
+            <file>file:/E:/prj301/Movieprj/web/views/register.jsp</file>
             <file>file:/E:/prj301/Movieprj/src/java/controllers/InsertMovieServlet.java</file>
             <file>file:/E:/prj301/Movieprj/web/views/managerMovie.jsp</file>
+            <file>file:/E:/prj301/Movieprj/web/views/login.jsp</file>
         </group>
     </open-files>
 </project-private>

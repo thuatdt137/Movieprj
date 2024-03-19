@@ -20,8 +20,6 @@ public class UpdateUserServlet extends HttpServlet {
 
     DAO dao = DAO.getINSTANCE();
 
-
-
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -71,7 +69,9 @@ public class UpdateUserServlet extends HttpServlet {
             role = Integer.parseInt(role_string);
             status = Integer.parseInt(status_string);
 
-            dao.updateUser(name, username, password, email, role, status, id);
+            if (role != 0) {
+                dao.updateUser(name, username, password, email, role, status, id);
+            }
             response.sendRedirect("manageuser");
         } catch (NumberFormatException e) {
         }

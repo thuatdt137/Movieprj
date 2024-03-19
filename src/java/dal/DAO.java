@@ -625,7 +625,7 @@ public class DAO {
                     JOIN
                         UserFavoriteMovies ON Movie.MovieID = UserFavoriteMovies.MovieID
                     WHERE
-                        UserFavoriteMovies.UserID = ? AND UserFavoriteMovies.isLove = 1 and Movie.Status = 1
+                        UserFavoriteMovies.UserID = ? AND UserFavoriteMovies.isLove = 1
                     GROUP BY
                         Movie.MovieID, Movie.Title, Movie.ReleaseDate, Movie.Description, Movie.ThumbSource, Movie.SourceLink, Movie.TrailerLink, Movie.Status, Movie.StatusRelease
                     ORDER BY
@@ -885,6 +885,68 @@ public class DAO {
         return check;
     }
 
+    public void changeStatusMovie(int movieID, int newStatus) {
+
+        System.out.println("Updating movie...");
+        String sql = """
+                 UPDATE Movie
+                 SET
+                     Status = ?
+                 WHERE
+                     MovieID = ?""";
+
+        try {
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            ps.setInt(1, newStatus);
+            ps.setInt(2, movieID);
+
+            int rs = ps.executeUpdate();
+            if (rs != 0) {
+                System.out.println("Update success");
+            } else {
+                System.out.println("No movie found with MovieID: " + movieID);
+            }
+        } catch (SQLException e) {
+            status = "Error at save Users " + e.getMessage();
+        }
+    }
+
+    public void changeLove(int userID, int movieID) {
+
+        System.out.println("Updating movie...");
+        String sql = """
+                 DECLARE @UserID INT = ?;
+                 DECLARE @MovieID INT = ?;
+                 IF EXISTS (SELECT 1 FROM UserFavoriteMovies WHERE UserID = @UserID AND MovieID = @MovieID)
+                 BEGIN
+                     UPDATE UserFavoriteMovies 
+                     SET isLove = CASE WHEN isLove = 0 THEN 1 ELSE 0 END
+                     WHERE UserID = @UserID AND MovieID = @MovieID;
+                 END
+                 ELSE
+                 BEGIN
+                     INSERT INTO UserFavoriteMovies (UserID, MovieID, isLove, Rate)
+                     VALUES (@UserID, @MovieID, 1, 0);
+                 END""";
+
+        try {
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            ps.setInt(1, userID);
+            ps.setInt(2, movieID);
+
+            int rs = ps.executeUpdate();
+            if (rs != 0) {
+                System.out.println("Update success");
+            } else {
+                System.out.println("No movie found with MovieID: " + movieID);
+            }
+        } catch (SQLException e) {
+            status = "Error at save Users " + e.getMessage();
+        }
+    }
+
     public void updateMovie(int movieID, String newTitle, String dateRelease, String newDescription, String newThumbSource, String newSourceLink, String newTrailerLink, int newStatus, int newStatusRelease) {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         java.util.Date date = null;
@@ -1063,16 +1125,6 @@ public class DAO {
             statement.setInt(2, movie_id);
             statement.setInt(3, movie_id);
             statement.setInt(4, movie_id);
-            statement.executeUpdate();
-        } catch (SQLException e) {
-        }
-
-        // Xóa người dùng từ bảng Userdb
-        String deleteUserQuery = "DELETE FROM Userdb WHERE UserID = ?";
-
-        try {
-            PreparedStatement statement = con.prepareStatement(deleteUserQuery);
-            statement.setInt(1, movie_id);
             statement.executeUpdate();
         } catch (SQLException e) {
         }
@@ -1386,7 +1438,7 @@ public class DAO {
         for (String string : list) {
             try {
                 int id = Integer.parseInt(string);
-                INSTANCE.deleteMovie(id);
+                INSTANCE.changeStatusMovie(id, INSTANCE.getMovieByIDAD(id).getStatus() == 0 ? 1 : 0);
             } catch (NumberFormatException e) {
             }
         }

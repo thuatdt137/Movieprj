@@ -57,7 +57,7 @@ public class RegisterServlet extends HttpServlet {
         String password = request.getParameter("password");
         try {
             if (dao.getUserbyEmail(email) == null && dao.checkUsername(username)) {
-                dao.insertUser(name, username, email, password, 1, 1);
+                dao.insertUser(name, username, password, email, 1, 1);
                 int id = dao.getUserbyEmail(email).getId();
 
                 session.setAttribute("us", username);

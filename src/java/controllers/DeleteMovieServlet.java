@@ -20,8 +20,6 @@ public class DeleteMovieServlet extends HttpServlet {
 
     DAO dao = DAO.getINSTANCE();
 
-
-
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -38,7 +36,8 @@ public class DeleteMovieServlet extends HttpServlet {
         int id;
         try {
             id = Integer.parseInt(id_string);
-            dao.deleteMovie(id);
+
+            dao.changeStatusMovie(id, dao.getMovieByIDAD(id).getStatus() == 0 ? 1 : 0);
             response.sendRedirect("managemovie");
         } catch (NumberFormatException e) {
             System.out.println(e);
@@ -56,7 +55,7 @@ public class DeleteMovieServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
     }
 
     /**

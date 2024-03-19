@@ -215,20 +215,6 @@
                                             <input type="text" placeholder="Enter keywords">
                                         </div>
                                         <div class="col-md-12 form-it">
-                                            <label>Celebrity Letter</label>
-                                            <select>
-                                                <option value="range">A</option>
-                                                <option value="saab">B</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-12 form-it">
-                                            <label>Category</label>
-                                            <select>
-                                                <option value="range">Actress</option>
-                                                <option value="saab">Others</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-12 form-it">
                                             <label>Year of birth</label>
                                             <div class="row">
                                                 <div class="col-md-6">
