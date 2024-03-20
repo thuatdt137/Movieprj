@@ -175,7 +175,8 @@ public class DAO {
                          SELECT
                              Movie.MovieID,
                              Genre.GenreID,
-                             Genre.GenreName
+                             Genre.GenreName,
+                             Genre.Status
                          FROM
                              Movie
                          JOIN
@@ -350,6 +351,7 @@ public class DAO {
                 Genre h = new Genre();
                 h.setId(rs.getInt("GenreID"));
                 h.setName(rs.getString("GenreName"));
+                h.setStatus(rs.getInt("Status"));
                 genres.add(h);
             }
 
@@ -370,6 +372,7 @@ public class DAO {
                 Genre h = new Genre();
                 h.setId(rs.getInt("GenreID"));
                 h.setName(rs.getString("GenreName"));
+                h.setStatus(rs.getInt("Status"));
                 genres.add(h);
             }
 
@@ -885,21 +888,100 @@ public class DAO {
         return check;
     }
 
-    public void changeStatusMovie(int movieID, int newStatus) {
-
-        System.out.println("Updating movie...");
+    public void changeStatusActor(int actorID) {
+        System.out.println("Updating actor...");
         String sql = """
-                 UPDATE Movie
-                 SET
-                     Status = ?
-                 WHERE
-                     MovieID = ?""";
+                 UPDATE Actor
+                     SET Status = CASE 
+                                     WHEN Status = 0 THEN 1
+                                     WHEN Status = 1 THEN 0
+                                  END
+                     WHERE ActorID = ?;""";
 
         try {
             PreparedStatement ps = con.prepareStatement(sql);
 
-            ps.setInt(1, newStatus);
-            ps.setInt(2, movieID);
+            ps.setInt(1, actorID);
+
+            int rs = ps.executeUpdate();
+            if (rs != 0) {
+                System.out.println("Update success");
+            } else {
+                System.out.println("No movie found with MovieID: " + actorID);
+            }
+        } catch (SQLException e) {
+            status = "Error at save Users " + e.getMessage();
+        }
+    }
+    
+    public void changeStatusGenre(int genreID) {
+        System.out.println("Updating user...");
+        String sql = """
+                 UPDATE Genre
+                     SET Status = CASE 
+                                     WHEN Status = 0 THEN 1
+                                     WHEN Status = 1 THEN 0
+                                  END
+                     WHERE GenreID = ?;""";
+
+        try {
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            ps.setInt(1, genreID);
+
+            int rs = ps.executeUpdate();
+            if (rs != 0) {
+                System.out.println("Update success");
+            } else {
+                System.out.println("No movie found with MovieID: " + genreID);
+            }
+        } catch (SQLException e) {
+            status = "Error at save Users " + e.getMessage();
+        }
+    }
+
+    public void changeStatusUser(int userID) {
+
+        System.out.println("Updating user...");
+        String sql = """
+                 UPDATE Userdb
+                     SET Status = CASE 
+                                     WHEN Status = 0 THEN 1
+                                     WHEN Status = 1 THEN 0
+                                  END
+                     WHERE UserID = ?;""";
+
+        try {
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            ps.setInt(1, userID);
+
+            int rs = ps.executeUpdate();
+            if (rs != 0) {
+                System.out.println("Update success");
+            } else {
+                System.out.println("No movie found with MovieID: " + userID);
+            }
+        } catch (SQLException e) {
+            status = "Error at save Users " + e.getMessage();
+        }
+    }
+
+    public void changeStatusMovie(int movieID) {
+
+        System.out.println("Updating movie...");
+        String sql = """
+                 UPDATE Movie
+                 SET Status = CASE 
+                                 WHEN Status = 0 THEN 1
+                                 WHEN Status = 1 THEN 0
+                              END
+                 WHERE MovieID = ?;""";
+
+        try {
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            ps.setInt(1, movieID);
 
             int rs = ps.executeUpdate();
             if (rs != 0) {
@@ -991,14 +1073,15 @@ public class DAO {
         }
     }
 
-    public void updateGenre(int genreID, String genreName) {
+    public void updateGenre(int genreID, String genreName, int Genre_status) {
         System.out.println("Updating genre...");
-        String sql = "UPDATE Genre SET GenreName = ? WHERE GenreID = ?";
+        String sql = "UPDATE Genre SET GenreName = ?, Status = ?, WHERE GenreID = ?";
 
         try {
             PreparedStatement ps = con.prepareStatement(sql);
             ps.setString(1, genreName);
             ps.setInt(2, genreID);
+            ps.setInt(3, Genre_status);
 
             int rs = ps.executeUpdate();
             if (rs != 0) {
@@ -1272,6 +1355,27 @@ public class DAO {
         return check;
     }
 
+    public boolean insertGenre(String Name, int Status) {
+        boolean check = false;
+
+        System.out.println("Saving data...");
+        String sql = "INSERT INTO Genre (GenreName, Status) VALUES (?, ?, ?, ?, ?, ?)";
+        try {
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, Name);
+            ps.setInt(2, Status);
+
+            int rs = ps.executeUpdate();
+            if (rs != 0) {
+                System.out.println("add success");
+                check = true;
+            }
+        } catch (SQLException e) {
+            status = "Error at save Users " + e.getMessage();
+        }
+        return check;
+    }
+
     public boolean insertUser(String Name, String Username, String Password, String Email, int Role, int Status) {
         boolean check = false;
 
@@ -1297,14 +1401,15 @@ public class DAO {
         return check;
     }
 
-    public int getTotalMovieUser() {
+    public int getTotalMovieUser(int id) {
         String sql = """
                      SELECT COUNT(*)
                      FROM Movie
                      JOIN UserFavoriteMovies ON Movie.MovieID = UserFavoriteMovies.MovieID
-                     WHERE UserFavoriteMovies.UserID = 1;""";
+                     WHERE UserFavoriteMovies.UserID = ? and UserFavoriteMovies.isLove = 1;""";
         try {
             PreparedStatement ps = con.prepareStatement(sql);
+            ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 return rs.getInt(1);
@@ -1387,7 +1492,7 @@ public class DAO {
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                list.add(new Genre(rs.getInt("GenreID"), rs.getString("GenreName")));
+                list.add(new Genre(rs.getInt("GenreID"), rs.getString("GenreName"), rs.getInt("Status")));
             }
 
         } catch (SQLException e) {
@@ -1426,7 +1531,7 @@ public class DAO {
         for (String string : list) {
             try {
                 int id = Integer.parseInt(string);
-                INSTANCE.deleteActor(id);
+                INSTANCE.changeStatusActor(id);
             } catch (NumberFormatException e) {
             }
         }
@@ -1438,7 +1543,7 @@ public class DAO {
         for (String string : list) {
             try {
                 int id = Integer.parseInt(string);
-                INSTANCE.changeStatusMovie(id, INSTANCE.getMovieByIDAD(id).getStatus() == 0 ? 1 : 0);
+                INSTANCE.changeStatusMovie(id);
             } catch (NumberFormatException e) {
             }
         }
@@ -1450,7 +1555,7 @@ public class DAO {
         for (String string : list) {
             try {
                 int id = Integer.parseInt(string);
-                INSTANCE.deleteUser(id);
+                INSTANCE.changeStatusUser(id);
             } catch (NumberFormatException e) {
             }
         }

@@ -45,7 +45,7 @@
                         </div>
                         <div class="col-sm-9">
                             <a href="#addMovieModall" class="btn btn-success" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Add New Movie</span></a>
-                            <a href="#deleteListMovie" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xE15C;</i> <span>Delete</span></a>						
+                            <a href="#deleteListMovie" class="btn btn-danger" data-toggle="modal"><i class="material-icons">&#xe2e7;</i> <span>Change</span></a>						
                         </div>
                     </div>
                 </div>
@@ -101,7 +101,7 @@
                                     </c:choose>
                                     <td>
                                         <a href="updatemovie?mid=${m.id}" class="edit"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
-                                        <a href="deletemovie?mid=${m.id}" class="delete"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
+                                        <a href="deletemovie?mid=${m.id}" class="delete"><i class="material-icons" data-toggle="tooltip" title="Delete" style="color: ${m.status eq 1 ? 'blue': 'red'}">&#xe2e7;</i></a>
                                     </td>
                                 </tr>
                             </c:forEach>

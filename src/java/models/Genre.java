@@ -12,13 +12,23 @@ public class Genre {
 
     private int id;
     private String name;
+    private int status;
 
     public Genre() {
     }
 
-    public Genre(int id, String name) {
+    public Genre(int id, String name, int status) {
         this.id = id;
         this.name = name;
+        this.status = status;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     public int getId() {

@@ -10,44 +10,32 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import models.*;
 
 /**
  *
  * @author thuat
  */
-public class UpdateGenreServlet extends HttpServlet {
+public class InsertGenreServlet extends HttpServlet {
 
     DAO dao = DAO.getINSTANCE();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String id_string = request.getParameter("gid");
-        int id;
-        try {
-            id = Integer.parseInt(id_string);
-            Genre genre = dao.getGenrebyId(id);
-            request.setAttribute("genreSelected", genre);
-            request.getRequestDispatcher("views/updategenre.jsp").forward(request, response);
-        } catch (ServletException | IOException | NumberFormatException e) {
-        }
 
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        int id, status;
+        int status;
 
-        String id_string = request.getParameter("id");
-        String name = request.getParameter("name");
-        String status_string = request.getParameter("status");
+        String name = request.getParameter("nameinsert");
+        String status_string = request.getParameter("statusinsert");
         try {
-            id = Integer.parseInt(id_string);
             status = Integer.parseInt(status_string);
 
-            dao.updateGenre(id, name, status);
+            dao.insertGenre(name, status);
             response.sendRedirect("managegenre");
         } catch (NumberFormatException e) {
         }

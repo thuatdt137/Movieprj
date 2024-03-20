@@ -20,8 +20,6 @@ public class DeleteActorServlet extends HttpServlet {
 
     DAO dao = DAO.getINSTANCE();
 
-
-
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -38,7 +36,7 @@ public class DeleteActorServlet extends HttpServlet {
         int id;
         try {
             id = Integer.parseInt(id_string);
-            dao.deleteActor(id);
+            dao.changeStatusActor(id);
             response.sendRedirect("manageactor");
         } catch (NumberFormatException e) {
             System.out.println(e);
@@ -56,7 +54,7 @@ public class DeleteActorServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
     }
 
     /**

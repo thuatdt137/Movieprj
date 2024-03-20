@@ -33,17 +33,6 @@ public class UserProfileServlet extends HttpServlet {
         String indexPage = request.getParameter("index") == null ? null : request.getParameter("index");
         String urlImgPath = getServletContext().getInitParameter("UrlImage");
         String urlImgPath2 = getServletContext().getInitParameter("Urlactors");
-        int index = 1;
-        if (indexPage != null) {
-            index = Integer.parseInt(indexPage);
-        }
-
-        int count = dao.getTotalMovieUser();
-        int endPage = count / numPerPage;
-        if (count % numPerPage != 0) {
-            endPage++;
-        }
-
         if (user_string == null) {
             request.getRequestDispatcher("views/homepage.jsp").forward(request, response);
         }
@@ -53,6 +42,17 @@ public class UserProfileServlet extends HttpServlet {
 
         } catch (NumberFormatException e) {
         }
+        int index = 1;
+        if (indexPage != null) {
+            index = Integer.parseInt(indexPage);
+        }
+
+        int count = dao.getTotalMovieUser(id);
+        int endPage = count / numPerPage;
+        if (count % numPerPage != 0) {
+            endPage++;
+        }
+
         User user = dao.getUserbyId(id);
 
         request.setAttribute("user", user);

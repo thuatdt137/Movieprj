@@ -72,6 +72,7 @@
                                 </th>
                                 <th>#</th>
                                 <th>Name</th>
+                                <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -86,9 +87,17 @@
                                     </td>
                                     <td>${genre.id}</td>
                                     <td>${genre.name}</td>
+                                    <c:choose>
+                                        <c:when test="${genre.status eq 1}">
+                                            <td><span class="status text-success">&bull;</span> Active</td>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <td><span class="status text-danger">&bull;</span> Suspended</td>                        
+                                        </c:otherwise>
+                                    </c:choose>
                                     <td>
                                         <a href="updategenre?gid=${genre.id}" class="edit"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
-                                        <a href="deletegenre?gid=${genre.id}" class="delete"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
+                                        <a href="deletegenre?gid=${genre.id}" class="delete"><i class="material-icons" data-toggle="tooltip" title="Delete" style="color: ${genre.status eq 1 ? 'blue': 'red'}">&#xe2e7;</i></a>
                                     </td>
                                 </tr>
                             </c:forEach>
@@ -129,6 +138,13 @@
                         <div class="form-group">
                             <label>Name</label>
                             <input type="text" class="form-control" name="nameinsert" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Status</label>
+                            <select id="status" name="statusinsert" class="form-control">
+                                <option value="0">Suspended</option>
+                                <option value="1">Active</option>
+                            </select>
                         </div>
                         <div class="modal-footer">
                             <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">

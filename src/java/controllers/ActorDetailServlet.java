@@ -26,18 +26,23 @@ public class ActorDetailServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String actor_string = request.getParameter("actor") == null ? "" : request.getParameter("actor");
-        String urlImgPath = getServletContext().getInitParameter("UrlImage");
-        String urlImgPath2 = getServletContext().getInitParameter("Urlactors");
         if (actor_string == null) {
             request.getRequestDispatcher("views/homepage.jsp").forward(request, response);
         }
+
         int id = -1;
         try {
             id = Integer.parseInt(actor_string);
         } catch (NumberFormatException e) {
         }
         Actor actor = dao.getActorbyId(id);
+        if (actor.getStatus() == 0) {
+            request.getRequestDispatcher("404").forward(request, response);
+        }
         ArrayList<Movie> movies = dao.getMoviesByActor(id);
+
+        String urlImgPath = getServletContext().getInitParameter("UrlImage");
+        String urlImgPath2 = getServletContext().getInitParameter("Urlactors");
 
         request.setAttribute("actor", actor);
         request.setAttribute("movies", movies);
